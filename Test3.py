@@ -356,66 +356,55 @@ all_data = []
 all_data2 = []
 all_data3 = []
 
-# Analyze data and save results for each year
-for year in years_of_interest:
-    if year in combined_data['year'].unique():
-        results, results2 = analyze_data_for_year3(year, combined_data)
-        print(results)
-        output_file_path = f'Batting_{year}.csv'  # Adjust the path as needed
-        results2.round(2).to_csv(f'overbyover{year}.csv')
-        results = results.sort_values(by=['Runs Scored'], ascending=False)
-        results.to_csv(output_file_path)
-        all_data.append(results)
-        all_data2.append(results2)
-        print(f"Data for year {year} saved to {output_file_path}")
-        results = analyze_data_for_year4(year,combined_data)
-        output_file_path2 = f'Battingbyphase_{year}.csv'  # Adjust the path as needed
-        results = results.sort_values(by=['Runs Scored'], ascending=False)
-        results.to_csv(output_file_path2)
-        all_data3.append(results)
-    else:
-        print(f"No data found for year {year}")
-#
-# # Read each file and store them in a list
-# for file in file_paths:
-#     df = pd.read_csv(file, low_memory=False)
-#     all_data.append(df)
-# Combine all data into a single DataFrame
-combined_data = pd.concat(all_data, ignore_index=True)
-combined_data2 = pd.concat(all_data2, ignore_index=True)
-combined_data9 = pd.concat(all_data3, ignore_index=True)
+# Load the data
+@st.cache
+def load_data(filename):
+    data = pd.read_csv(filename, low_memory=False)
+    return data
 
-output_file_path = 'batter_data_summary2.csv'  # Adjust the path as needed
-combined_data.to_csv(output_file_path)
+# The main app function
+def main():
+    st.title('Cricket Analysis')
+    
+    # Load your data
+    data = load_data('all_matches.csv')
+    combined_data['B'] = 1
 
-# Drop duplicates to prevent double counting
-combined_data.drop_duplicates(inplace=True)
+    # Set 'B' to 0 for deliveries that are wides
+    # Assuming 'wides' column exists and is non-zero for wide balls
+    data.loc[data['wides'] > 0, 'B'] = 0
+    
+    data['wides'].fillna(0, inplace=True)
+    data['noballs'].fillna(0, inplace=True)
+    
+    data['RC'] = data['wides'] + data['noballs'] + data['runs_off_bat']
+    
+    # Extract the year from the 'start_date' column
+    
+    data['year'] = pd.to_datetime(data['start_date'], format='mixed').dt.year
+    
+    # Remove any potential duplicate rows
+    data = data.drop_duplicates()
 
-most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
+    
+    data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
+    data['over'] = data['ball2'] // 1 + 1
+    
+    # Selectors for user input
+    year = st.selectbox('Select Year:', options=data['year'].unique(), index=0)
+    overs = st.slider('Select Overs:', min_value=1, max_value=20, value=5)
 
-truevalues = combined_data.groupby(['Player'])[
-    ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum()
-truevalues2 = combined_data9.groupby(['Player','phase'])[
-    ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum()
+    combined_data2 = data[data['over'].isin(over)].copy()
+    data = combined_data2.copy()
+    
+    # A button to trigger the analysis
+    if st.button('Analyze'):
+        # Call a hypothetical function to analyze data
+        results = analyze_data_for_year4(data, year, overs)
+        
+        # Display the results
+        st.dataframe(results)
 
-final_results = truemetrics(truevalues)
-
-output_file_path = 'Batting_Overall.csv'  # Adjust the path as needed
-
-final_results2 = pd.merge(most_frequent_team, final_results, on='Player', how='left')
-
-final_results3, f = calculate_entry_point_all_years(x)
-final_results3.columns = ['Player', 'Median Entry Point']
-
-final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left')
-final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
-final_results4.round(2).to_csv(output_file_path)
-
-truemetrics3(combined_data2).round(2).to_csv('overbyover.csv')
-
-most_frequent_team = combined_data9.groupby(['Player','phase'])['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
-final_results = truemetrics(truevalues2)
-final_results2 = pd.merge(most_frequent_team, final_results, on=['Player','phase'], how='left')
-final_results2.round(2).to_csv('Battingbyphase.csv')
-
-combined_data9.to_csv('Battingbyphase2.csv')
+# Run the main function
+if __name__ == '__main__':
+    main()
