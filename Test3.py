@@ -2,29 +2,6 @@ import pandas as pd
 import glob
 import streamlit as st
 
-# file_pattern = '*.csv'
-# file_paths = [file for file in glob.glob(file_pattern) if "_info" not in file]
-#
-# all_data = []
-# for file in file_paths:
-#     df = pd.read_csv(file, low_memory=False)
-#     all_data.append(df)
-#
-# combined_data = pd.concat(all_data, ignore_index=True)
-
-# combined_data.to_csv('all_matches.csv')
-
-#
-#
-# temp = combined_data[combined_data['striker'] == 'V Kohli']
-# temp2 = temp['match_id'].unique().tolist()
-# temp3 = combined_data[combined_data['striker'] == 'V Kohli']
-# temp4 = temp3['match_id'].unique().tolist()
-#
-# combined_data2 = combined_data[combined_data['venue'] == 'Narendra Modi Stadium, Ahmedabad'].copy()
-# combined_data = combined_data2.copy()
-
-
 
 def truemetrics(truevalues):
     truevalues['Ave'] = truevalues['Runs Scored'] / truevalues['Out']
@@ -311,13 +288,14 @@ def main():
     
     # Selectors for user input
     year = st.selectbox('Select Year:', options=data['year'].unique(), index=0)
+    start_year, end_year = st.slider('Select Years Range:', min_value=2008, max_value=2024, value=(1, 5))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 5))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
-    
+    filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     # A button to trigger the analysis
     if st.button('Analyze'):
         # Call a hypothetical function to analyze data
-        results = analyze_data_for_year3(year,filtered_data)
+        results = analyze_data_for_year3(year,filtered_data2)
         
         # Display the results
         st.dataframe(results)
