@@ -285,7 +285,7 @@ def main():
         final_results3, f = calculate_entry_point_all_years(x)
         final_results3.columns = ['Player', 'Median Entry Point']
 
-        final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left')
+        final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left').reset_index()
         final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
 
         # Display the results
