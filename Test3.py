@@ -1,8 +1,6 @@
 import pandas as pd
 import glob
 
-from sklearn.preprocessing import MinMaxScaler
-
 # file_pattern = '*.csv'
 # file_paths = [file for file in glob.glob(file_pattern) if "_info" not in file]
 #
