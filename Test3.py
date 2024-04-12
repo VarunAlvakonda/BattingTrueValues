@@ -289,7 +289,7 @@ def main():
         final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
 
         # Display the results
-        st.dataframe(final_results4)
+        st.dataframe(final_results4[['Player', 'Median Entry Point','Team','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR']])
 
 # Run the main function
 if __name__ == '__main__':
