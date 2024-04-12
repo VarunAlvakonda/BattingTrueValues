@@ -286,10 +286,10 @@ def main():
     data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
     
-    # Selectors for user input  
+    # Selectors for user input
     year = st.selectbox('Select Year:', options=data['year'].unique(), index=0)
-    start_year, end_year = st.slider('Select Years Range:', min_value=2008, max_value=2024, value=(1, 5))
-    start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 5))
+    start_year, end_year = st.slider('Select Years Range:', min_value=2008, max_value=2024, value=(2008, 2024))
+    start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     # A button to trigger the analysis
