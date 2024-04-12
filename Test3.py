@@ -317,7 +317,7 @@ def main():
     # A button to trigger the analysis
     if st.button('Analyze'):
         # Call a hypothetical function to analyze data
-        results = analyze_data_for_year4(year,filtered_data)
+        results = analyze_data_for_year3(year,filtered_data)
         
         # Display the results
         st.dataframe(results)
