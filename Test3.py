@@ -211,7 +211,7 @@ def analyze_data_for_year3(year2, data2):
     final_results4 = pd.merge(final_results3, analysis_results, on='Player', how='left')
     print(combined_df3.columns)
     truevalues = truemetrics2(combined_df3)
-    return final_results4.round(2), truevalues
+    return final_results4.round(2)
 
 def analyze_data_for_year4(year2, data2):
     combineddata2 = data2[data2['innings'] < 3].copy()
