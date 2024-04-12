@@ -126,35 +126,6 @@ def analyze_data_for_year3(year2, data2):
     over_outs = dismissed_data.groupby(['venue', 'over'])[['Out']].sum().reset_index()
     over_outs.columns = ['Venue', 'Over', 'Outs']
 
-    temp = combineddata.copy()
-    temp['Runs'] = temp.groupby(['striker', 'match_id', 'innings'], as_index=False)['runs_off_bat'].cumsum()
-    temp['Balls'] = temp.groupby(['striker', 'match_id', 'innings'], as_index=False)['B'].cumsum()
-    temp['Wickets'] = temp.groupby(['striker', 'match_id', 'innings'], as_index=False)['Out'].cumsum()
-
-    temp.to_csv('asdkasda.csv')
-
-    temp2 = temp[['match_id', 'innings', 'striker', 'over','Runs', 'Balls']]
-    temp2 = temp2.drop_duplicates()
-    temp2.round(2).to_csv(f'ballbyball{year2}.csv')
-    temp2['count'] = 1
-    temp2.loc[temp2['Balls'] == 0, 'count'] = 0
-    temp3 = temp2.groupby(['striker', 'Balls'])[['Runs', 'count']].sum().reset_index()
-    temp3['Ave Runs'] = temp3['Runs'] / temp3['count']
-    temp3['SR'] = temp3['Ave Runs'] / temp3['Balls'] * 100
-    temp3.round(2).to_csv(f'averagesr{year2}.csv')
-
-    # Creating a pivot table with Balls as the index and players as columns
-    pivot_table = temp3.pivot_table(values='Ave Runs', index='Balls', columns='striker')
-
-    # Saving the pivot table to a CSV file
-    pivot_table.round(2).to_csv(f'player_runs_by_balls{year2}.csv')
-
-    # Create a pivot table with Balls as the index and strikers as columns with their average runs
-    pivot_table = temp3.pivot_table(values='SR', index='Balls', columns='striker')
-
-    # Saving the strike rates to a CSV file
-    pivot_table.round(2).to_csv(f'strike_rate_by_balls{year2}.csv')
-
     # Group by player and aggregate the runs scored
     player_runs = combineddata.groupby(['striker', 'venue', 'over'])[['runs_off_bat', 'B']].sum().reset_index()
     # Rename the columns for clarity
@@ -295,10 +266,30 @@ def main():
     # A button to trigger the analysis
     if st.button('Analyze'):
         # Call a hypothetical function to analyze data
-        results = analyze_data_for_year3(year,filtered_data2)
-        
+        all_data = []
+
+# Analyze data and save results for each year
+        for year in filtered_data2['year'].unique():
+            results = analyze_data_for_year3(year, filtered_data2)
+            all_data.append(results)
+
+        combined_data = pd.concat(all_data, ignore_index=True)
+        most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
+
+        truevalues = combined_data.groupby(['Player'])[
+            ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum()
+        final_results = truemetrics(truevalues)
+
+        final_results2 = pd.merge(most_frequent_team, final_results, on='Player', how='left')
+
+        final_results3, f = calculate_entry_point_all_years(x)
+        final_results3.columns = ['Player', 'Median Entry Point']
+
+        final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left')
+        final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
+
         # Display the results
-        st.dataframe(results)
+        st.dataframe(final_results4)
 
 # Run the main function
 if __name__ == '__main__':
