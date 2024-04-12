@@ -311,15 +311,13 @@ def main():
     
     # Selectors for user input
     year = st.selectbox('Select Year:', options=data['year'].unique(), index=0)
-    overs = st.slider('Select Overs:', min_value=1, max_value=20, value=5)
-
-    combined_data2 = data[data['over'].isin(overs)].copy()
-    data = combined_data2.copy()
+    start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 5))
+    filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     
     # A button to trigger the analysis
     if st.button('Analyze'):
         # Call a hypothetical function to analyze data
-        results = analyze_data_for_year4(data, year, overs)
+        results = analyze_data_for_year4(year,filtered_data)
         
         # Display the results
         st.dataframe(results)
