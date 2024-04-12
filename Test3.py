@@ -360,6 +360,7 @@ all_data3 = []
 for year in years_of_interest:
     if year in combined_data['year'].unique():
         results, results2 = analyze_data_for_year3(year, combined_data)
+        print(results)
         output_file_path = f'Batting_{year}.csv'  # Adjust the path as needed
         results2.round(2).to_csv(f'overbyover{year}.csv')
         results = results.sort_values(by=['Runs Scored'], ascending=False)
