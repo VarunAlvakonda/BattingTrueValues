@@ -367,7 +367,7 @@ def main():
     st.title('Cricket Analysis')
     
     # Load your data
-    data = load_data('all_matches.csv')
+    data =  pd.read_csv('all_matches.csv', low_memory=False)
     combined_data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
