@@ -289,10 +289,10 @@ def main():
         final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left').reset_index()
         final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
         final_results4 = final_results4[['Player', 'Median Entry Point','Team','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR']]
-
+        final_results4 = final_results4[final_results4['Runs Scored']>=start_runs]
 
         # Display the results
-        st.dataframe(final_results4[final_results4['Runs Scored']>=start_runs].round(2))
+        st.dataframe(final_results4.round(2))
 
 # Run the main function
 if __name__ == '__main__':
