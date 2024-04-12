@@ -287,7 +287,7 @@ def main():
     
     # Load your data
     data =  pd.read_csv('all_matches.csv', low_memory=False)
-    combined_data['B'] = 1
+    data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
     # Assuming 'wides' column exists and is non-zero for wide balls
