@@ -260,7 +260,6 @@ def main():
     # Selectors for user input
     start_year, end_year = st.slider('Select Years Range:', min_value=2008, max_value=2024, value=(2008, 2024))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
-    start_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=10000, value=(1, 10000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     x = filtered_data2
@@ -289,8 +288,6 @@ def main():
         final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left').reset_index()
         final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
         final_results4 = final_results4[['Player', 'Median Entry Point','Team','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR']]
-        final_results4 = final_results4[final_results4['Runs Scored']>=start_runs]
-
         # Display the results
         st.dataframe(final_results4.round(2))
 
