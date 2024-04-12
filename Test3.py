@@ -231,7 +231,7 @@ def load_data(filename):
 
 # The main app function
 def main():
-    st.title('Cricket Analysis')
+    st.title('IPL Batting True Values')
     
     # Load your data
     data =  pd.read_csv('all_matches.csv', low_memory=False)
