@@ -1,73 +1,9 @@
 import math
 
 import pandas as pd
-import glob
-
-from sklearn.preprocessing import MinMaxScaler
-import pandas as pd
-#
-# file_pattern = '*.csv'
-# file_paths = [file for file in glob.glob(file_pattern) if "_info" not in file]
-#
-# all_data = []
-# for file in file_paths:
-#     df = pd.read_csv(file, low_memory=False)
-#     all_data.append(df)
-#
-# combined_data = pd.concat(all_data, ignore_index=True)
-combined_data = pd.read_csv('all_matches.csv', low_memory=False)
-
-combined_data['B'] = 1
-
-# Set 'B' to 0 for deliveries that are wides
-# Assuming 'wides' column exists and is non-zero for wide balls
-combined_data.loc[combined_data['wides'] > 0, 'B'] = 0
-
-# Create the 'Out' column based on 'wicket_type'
-# Assuming a player is out if 'wicket_type' is not null or not empty
-# combined_data['Wicket'] = combined_data['wicket_type'].apply(lambda x: 0 if pd.isna(
-#     x) or x == '' or x == 'retired hurt' or x == 'run out' or x == 'retired out' or x == 'obstructing the field' else 1)
-
-combined_data['wides'].fillna(0, inplace=True)
-combined_data['noballs'].fillna(0, inplace=True)
-
-combined_data['RC'] = combined_data['wides'] + combined_data['noballs'] + combined_data['runs_off_bat']
+import streamlit as st
 
 # Extract the year from the 'start_date' column
-
-combined_data['year'] = pd.to_datetime(combined_data['start_date'], format='mixed').dt.year
-
-# Remove any potential duplicate rows
-combined_data = combined_data.drop_duplicates()
-
-# Define the years of interest
-years_of_interest = list(range(2008, 2025))
-
-combined_data['ball2'] = pd.to_numeric(combined_data['ball'], errors='coerce')
-
-# Extract the over number using integer division
-combined_data['over'] = combined_data['ball2'] // 1 + 1
-
-over = list(range(1, 21))
-combined_data2 = combined_data[combined_data['over'].isin(over)].copy()
-combined_data = combined_data2.copy()
-
-# Remove any potential duplicate rows
-combined_data = combined_data.drop_duplicates()
-
-# combined_data.to_csv('left.csv')
-# combined_data = combined_data[combined_data['BatType'] == 'L']
-
-# combined_data = combined_data[combined_data['bowler']=='Rashid Khan']
-
-ball_bins = [0, 6, 11, 16, 20]
-print(ball_bins)
-ball_labels = ['1 to 6','7 to 11','12 to 16','17 to 20']
-print(ball_labels)
-combined_data['phase'] = pd.cut(combined_data['over'], bins=ball_bins, labels=ball_labels, include_lowest=True, right=True)
-print(combined_data)
-
-x =  combined_data[combined_data['year'].isin(years_of_interest)].copy()
 
 def truemetrics(truevalues):
     truevalues['ER'] = truevalues['Runs Conceded'] / (truevalues['B'] / 6)
@@ -214,66 +150,107 @@ def analyze_data_for_year(year, data):
     final_results = truemetrics(truevalues)
     final_results3 = pd.merge(analysis_results, final_results, on='Player', how='left')
     final_results4 = pd.merge(players_years, final_results3, on='Player', how='left')
-    return final_results4.round(2),truevalues2
+    return final_results4.round(2)
 
 
-# Remove any potential duplicate rows
-combined_data = combined_data.drop_duplicates()
+# Load the data
+@st.cache
+def load_data(filename):
+    data = pd.read_csv(filename, low_memory=False)
+    return data
 
-all_data = []
-all_data2 = []
-# Analyze data and save results for each year
-for year in years_of_interest:
-    if year in combined_data['year'].unique():
-        results,results2 = analyze_data_for_year(year, combined_data)
-        all_data2.append(results2)
-        results2.round(2).to_csv(f'overbyoverbowling{year}.csv')
-        output_file_path = f'Bowling_{year}.csv'  # Adjust the path as needed
-        results = results.sort_values(by=['Wicket'],ascending=False)
-        all_data.append(results)
-        results.to_csv(output_file_path)
-        print(f"Data for year {year} saved to {output_file_path}")
-    else:
-        print(f"No data found for year {year}")
+# The main app function
+def main():
+    st.title('Franchise Leagues Batting True Values')
+
+    league = st.selectbox('Select your franchise league:', ['IPL','PSL','SA20'])
+    # Load your data
+    if league == 'IPL':
+        data =  pd.read_csv('all_matches.csv', low_memory=False)
+    elif league == 'PSL':
+        data =  pd.read_csv('PSL.csv', low_memory=False)
+    elif league == 'SA20':
+        data =  pd.read_csv('SA20.csv', low_memory=False)
+    data['B'] = 1
+
+    # Set 'B' to 0 for deliveries that are wides
+    # Assuming 'wides' column exists and is non-zero for wide balls
+    data.loc[data['wides'] > 0, 'B'] = 0
+
+    data['wides'].fillna(0, inplace=True)
+    data['noballs'].fillna(0, inplace=True)
+
+    data['RC'] = data['wides'] + data['noballs'] + data['runs_off_bat']
+
+    # Extract the year from the 'start_date' column
+
+    data['year'] = pd.to_datetime(data['start_date'], format='mixed').dt.year
+    years = data['year'].unique()
+
+    # Remove any potential duplicate rows
+    data = data.drop_duplicates()
 
 
+    data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
+    data['over'] = data['ball2'] // 1 + 1
+
+    # Selectors for user input
+    options = ['Overall Stats', 'Season By Season']
+    # Create a select box
+    choice = st.selectbox('Select your option:', options)
+    choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
+    start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
+    start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
+    start_runs,end_runs = st.slider('Select Minimum Wickets:', min_value=1, max_value=300, value=(1, 300))
+    filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
+    filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
+    if choice2 == 'Individual':
+        name = st.selectbox('Choose the Player From the list', data['striker'].unique())
+    x = filtered_data2
+    # A button to trigger the analysis
+    if st.button('Analyse'):
+        # Call a hypothetical function to analyze data
+        all_data = []
+
+        # Analyze data and save results for each year
+        for year in filtered_data2['year'].unique():
+            results = analyze_data_for_year(year, filtered_data2)
+            all_data.append(results)
+
+        combined_data = pd.concat(all_data, ignore_index=True)
+        most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
+
+        truevalues = combined_data.groupby('Player')[['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
+
+        final_results = truemetrics(truevalues)
+
+        final_results2 = pd.merge(most_frequent_team, final_results, on='Player', how='left')
+
+        final_results3, f = calculate_entry_point_all_years(x)
+        final_results3.columns = ['Player', 'Median Entry Point']
+
+        final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left').reset_index()
+        final_results4 = final_results4.sort_values(by=['Wicket'],ascending=False)
+        final_results4 = final_results4[(final_results4['Wicket'] >= start_runs) & (final_results4['Wicket'] <= end_runs)]
+        if choice == 'Overall Stats':
+            # Display the results
+            if choice2 == 'Individual':
+                if name in final_results4['Player'].unique():
+                    final_results4 = final_results4[final_results4['Player'] == name]
+                else:
+                    st.subheader('Player not in this list')
+            final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
+            st.dataframe(final_results4.round(2))
+        elif choice == 'Season By Season':
+            if choice2 == 'Individual':
+                if name in combined_data['Player'].unique():
+                    combined_data = combined_data[combined_data['Player'] == name]
+                else:
+                    st.subheader('Player not in this list')
+            combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
+            st.dataframe(combined_data)
 
 
-# Combine all data into a single DataFrame
-combined_data = pd.concat(all_data, ignore_index=True)
-combined_data12 = pd.concat(all_data2, ignore_index=True)
-
-combined_data12.round(2).to_csv('overbyoverbowling.csv')
-
-truevalues2 = combined_data12.groupby(['Player','phase'])[
-    ['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum().reset_index()
-
-# Creating a pivot table with Balls as the index and players as columns
-pivot_table = truevalues2.pivot_table(values='B', index='Player', columns='phase')
-
-pivot_table.round(2).to_csv('overbyoverbowling2.csv')
-
-output_file_path = 'bowler_data_summary2.csv'  # Adjust the path as needed
-
-
-combined_data.to_csv(output_file_path)
-
-# Drop duplicates to prevent double counting
-combined_data.drop_duplicates(inplace=True)
-
-truevalues = combined_data.groupby('Player')[['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
-
-final_results = truemetrics(truevalues)
-
-most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
-
-final_results2 = pd.merge(most_frequent_team, final_results, on='Player', how='left')
-
-analysis_results = calculate_entry_point_all_years(x)
-analysis_results.columns = ['Player', 'Median Entry Point']
-
-final_results3 = pd.merge(analysis_results, final_results2, on='Player', how='left')
-output_file_path = 'Bowling_Overall.csv'  # Adjust the path as needed
-
-final_results3 = final_results3.sort_values(by=['Wicket'],ascending=False)
-final_results3.round(2).to_csv(output_file_path)
+# Run the main function
+if __name__ == '__main__':
+    main()
