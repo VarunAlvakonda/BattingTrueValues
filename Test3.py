@@ -293,6 +293,7 @@ def main():
         final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
         final_results4 = final_results4[['Player', 'Median Entry Point','Team','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR']]
         final_results4['Runs Scored'] = pd.to_numeric(final_results4['Runs Scored'], errors='coerce')
+        final_results4.dropna(subset=['Runs Scored'], inplace=True)
         print(start_runs)
         final_results4 = final_results4[final_results4['Runs Scored'] >= start_runs]
         if choice == 'Overall Stats':
