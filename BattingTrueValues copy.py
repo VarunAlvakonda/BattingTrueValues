@@ -160,11 +160,12 @@ def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
     return data
 
+
 # The main app function
 def main():
     st.title('Batting True Values by Bowling Type')
 
-    data = pd.read_csv('IPLData5.csv',low_memory=False)
+    data = pd.read_csv('IPLData5.csv', low_memory=False)
     # Set 'B' to 0 for deliveries that are wides
     data['B'] = 1
 
@@ -186,15 +187,12 @@ def main():
     # Remove any potential duplicate rows
     data = data.drop_duplicates()
 
-
-
     data['ball2'] = pd.to_numeric(data['Over'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
 
-
     rpace = ['RF', 'RFM', 'RM', 'RMF']
     lpace = ['LF', 'LF/LM', 'LFM', 'LM', 'LMF']
-    roff = ['OB', 'RM/OB','S']
+    roff = ['OB', 'RM/OB', 'S']
     loff = ['SLA']
     rleg = ['LB']
     lleg = ['SLW']
@@ -207,15 +205,17 @@ def main():
     data.loc[data['BowlType'].isin(rleg), 'Types'] = 'Right Arm Wrist Spin'
     data.loc[data['BowlType'].isin(lleg), 'Types'] = 'Left Arm Wrist Spin'
 
-    types = ['Right Arm Pace', 'Left Arm Pace', 'Right Arm Finger Spin', 'Left Arm Finger Spin', 'Right Arm Wrist Spin','Left Arm Wrist Spin', ]
+    types = ['Right Arm Pace', 'Left Arm Pace', 'Right Arm Finger Spin', 'Left Arm Finger Spin', 'Right Arm Wrist Spin',
+             'Left Arm Wrist Spin', ]
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
     # Create a select box
     choice = st.selectbox('Select your option:', options)
-    choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
-    start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
+    choice2 = st.selectbox('Individual Player or Everyone:', ['Individual', 'Everyone'])
+    start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years),
+                                     value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
-    start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=10000, value=(1, 10000))
+    start_runs, end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=10000, value=(1, 10000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
@@ -239,8 +239,11 @@ def main():
         final_results = truemetrics(truevalues)
 
         final_results4 = final_results.sort_values(by=['Runs Scored'], ascending=False)
-        final_results4 = final_results4[['Player', 'Median Entry Point','Team','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR']]
-        final_results4 = final_results4[(final_results4['Runs Scored'] >= start_runs) & (final_results4['Runs Scored'] <= end_runs)]
+        final_results4 = final_results4[
+            ['Player', 'Median Entry Point', 'Team', 'I', 'Runs Scored', 'BF', 'Out', 'Ave', 'SR', 'Expected Ave',
+             'Expected SR', 'True Ave', 'True SR']]
+        final_results4 = final_results4[
+            (final_results4['Runs Scored'] >= start_runs) & (final_results4['Runs Scored'] <= end_runs)]
         if choice == 'Overall Stats':
             # Display the results
             if choice2 == 'Individual':
