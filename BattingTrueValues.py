@@ -237,21 +237,18 @@ def main():
             ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum().reset_index()
         final_results = truemetrics(truevalues)
 
-        final_results4 = final_results.sort_values(by=['Runs Scored'], ascending=False)
-        final_results4 = final_results4[
-            ['Player', 'Median Entry Point', 'Team', 'I', 'Runs Scored', 'BF', 'Out', 'Ave', 'SR', 'Expected Ave',
-             'Expected SR', 'True Ave', 'True SR']]
-        final_results4 = final_results4[
-            (final_results4['Runs Scored'] >= start_runs) & (final_results4['Runs Scored'] <= end_runs)]
+        final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
+        final_results = final_results[['Player', 'Median Entry Point', 'Team', 'I', 'Runs Scored', 'BF', 'Out', 'Ave', 'SR', 'Expected Ave','Expected SR', 'True Ave', 'True SR']]
+        final_results = final_results[(final_results['Runs Scored'] >= start_runs) & (final_results['Runs Scored'] <= end_runs)]
         if choice == 'Overall Stats':
             # Display the results
             if choice2 == 'Individual':
-                if name in final_results4['Player'].unique():
-                    final_results4 = final_results4[final_results4['Player'] == name]
+                if name in final_results['Player'].unique():
+                    final_results = final_results[final_results['Player'] == name]
                 else:
                     st.subheader('Player not in this list')
-            final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
-            st.dataframe(final_results4.round(2))
+            final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
+            st.dataframe(final_results.round(2))
         elif choice == 'Season By Season':
             if choice2 == 'Individual':
                 if name in combined_data['Player'].unique():
