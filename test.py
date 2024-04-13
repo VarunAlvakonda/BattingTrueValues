@@ -161,7 +161,7 @@ def load_data(filename):
 
 # The main app function
 def main():
-    st.title('Franchise Leagues Batting True Values')
+    st.title('Franchise Leagues Bowling True Values')
 
     league = st.selectbox('Select your franchise league:', ['IPL','PSL','SA20'])
     # Load your data
