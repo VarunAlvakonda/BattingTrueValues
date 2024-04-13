@@ -232,7 +232,6 @@ def main():
             all_data.append(results)
 
         combined_data = pd.concat(all_data, ignore_index=True)
-        most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
 
         truevalues = combined_data.groupby(['Player', 'Types'])[
             ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum().reset_index()
