@@ -205,7 +205,7 @@ def main():
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
-        name = st.selectbox('Choose the Player From the list', data['striker'].unique())
+        name = st.selectbox('Choose the Player From the list', data['bowler'].unique())
     x = filtered_data2
     # A button to trigger the analysis
     if st.button('Analyse'):
