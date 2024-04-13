@@ -1,7 +1,7 @@
 import pandas as pd
 import glob
 import streamlit as st
-import plotly.express as px
+import matplotlib.pyplot as plt
 
 
 def truemetrics(truevalues):
@@ -224,13 +224,15 @@ all_data = []
 all_data2 = []
 all_data3 = []
 
-
-def plot_plotly_scatter(data):
-    fig = px.scatter(data, x='True SR', y='True Ave', hover_data=['Player', 'Team'],
-                     title='Scatter Plot of Ave vs SR')
-    fig.update_layout(xaxis_title='True SR',
-                      yaxis_title='True Ave')
+# Assuming 'final_results' DataFrame has the necessary data
+def plot_matplotlib_scatter(data):
+    fig, ax = plt.subplots()
+    ax.scatter(data['True SR'], data['True Ave'], alpha=0.5)
+    ax.set_title('Scatter Plot of True SR vs True Ave')
+    ax.set_xlabel('True SR')
+    ax.set_ylabel('True Ave')
     return fig
+
 
 # Load the data
 @st.cache
@@ -321,8 +323,8 @@ def main():
                     st.subheader('Player not in this list')
             final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results4.round(2))
-            fig = plot_plotly_scatter(final_results4)
-            st.plotly_chart(fig)
+            fig = plot_matplotlib_scatter(final_results4)
+            st.pyplot(fig)
 
         elif choice == 'Season By Season':
             if choice2 == 'Individual':
@@ -332,8 +334,8 @@ def main():
                     st.subheader('Player not in this list')
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
-            fig = plot_plotly_scatter(combined_data)
-            st.plotly_chart(fig)
+            fig = plot_matplotlib_scatter(combined_data)
+            st.pyplot(fig)
 
 # Run the main function
 if __name__ == '__main__':
