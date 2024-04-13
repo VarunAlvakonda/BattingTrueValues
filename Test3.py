@@ -231,10 +231,16 @@ def load_data(filename):
 
 # The main app function
 def main():
-    st.title('IPL Batting True Values')
-    
+    st.title('Franchise Leagues Batting True Values')
+
+    league = st.selectbox('Select your franchise league:', ['IPL','PSL','SA20'])
     # Load your data
-    data =  pd.read_csv('all_matches.csv', low_memory=False)
+    if league == 'IPL':
+        data =  pd.read_csv('all_matches.csv', low_memory=False)
+    elif league == 'PSL':
+        data =  pd.read_csv('PSL.csv', low_memory=False)
+    elif league == 'SA20':
+        data =  pd.read_csv('SA20.csv', low_memory=False)
     data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
@@ -249,7 +255,8 @@ def main():
     # Extract the year from the 'start_date' column
     
     data['year'] = pd.to_datetime(data['start_date'], format='mixed').dt.year
-    
+    years = data['year'].unique()
+
     # Remove any potential duplicate rows
     data = data.drop_duplicates()
 
@@ -262,7 +269,7 @@ def main():
     # Create a select box
     choice = st.selectbox('Select your option:', options)
     choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
-    start_year, end_year = st.slider('Select Years Range:', min_value=2008, max_value=2024, value=(2008, 2024))
+    start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=2008, max_value=2024, value=(1, 10000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
