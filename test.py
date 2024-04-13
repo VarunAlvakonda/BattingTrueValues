@@ -236,7 +236,7 @@ def main():
                     final_results4 = final_results4[final_results4['Player'] == name]
                 else:
                     st.subheader('Player not in this list')
-            final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
+            final_results4 = final_results4.sort_values(by=['Wicket'], ascending=False)
             st.dataframe(final_results4.round(2))
         elif choice == 'Season By Season':
             if choice2 == 'Individual':
@@ -244,7 +244,7 @@ def main():
                     combined_data = combined_data[combined_data['Player'] == name]
                 else:
                     st.subheader('Player not in this list')
-            combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
+            combined_data = combined_data.sort_values(by=['Wicket'], ascending=False)
             st.dataframe(combined_data)
 
 
