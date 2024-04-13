@@ -267,7 +267,7 @@ def main():
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     x = filtered_data2
     # A button to trigger the analysis
-    if st.button('Analyze'):
+    if st.button('Analyse'):
         # Call a hypothetical function to analyze data
         all_data = []
 
