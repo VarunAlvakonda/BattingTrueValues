@@ -1,6 +1,7 @@
 import pandas as pd
 import glob
 import streamlit as st
+import plotly.express as px
 
 
 def truemetrics(truevalues):
@@ -223,6 +224,14 @@ all_data = []
 all_data2 = []
 all_data3 = []
 
+
+def plot_plotly_scatter(data):
+    fig = px.scatter(data, x='True SR', y='True Ave', hover_data=['Player', 'Team'],
+                     title='Scatter Plot of Ave vs SR')
+    fig.update_layout(xaxis_title='True SR',
+                      yaxis_title='True Ave')
+    return fig
+
 # Load the data
 @st.cache
 def load_data(filename):
@@ -312,6 +321,9 @@ def main():
                     st.subheader('Player not in this list')
             final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results4.round(2))
+            fig = plot_plotly_scatter(final_results4)
+            st.plotly_chart(fig)
+
         elif choice == 'Season By Season':
             if choice2 == 'Individual':
                 if name in combined_data['Player'].unique():
@@ -320,7 +332,8 @@ def main():
                     st.subheader('Player not in this list')
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
-
+            fig = plot_plotly_scatter(combined_data)
+            st.plotly_chart(fig)
 
 # Run the main function
 if __name__ == '__main__':
