@@ -215,7 +215,6 @@ def main():
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years),
                                      value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
-    start_runs, end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=10000, value=(1, 10000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
@@ -238,8 +237,6 @@ def main():
         final_results = truemetrics(truevalues)
 
         final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
-        final_results = final_results[['Player', 'Median Entry Point', 'Team', 'I', 'Runs Scored', 'BF', 'Out', 'Ave', 'SR', 'Expected Ave','Expected SR', 'True Ave', 'True SR']]
-        final_results = final_results[(final_results['Runs Scored'] >= start_runs) & (final_results['Runs Scored'] <= end_runs)]
         if choice == 'Overall Stats':
             # Display the results
             if choice2 == 'Individual':
