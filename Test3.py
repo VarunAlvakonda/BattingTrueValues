@@ -261,6 +261,7 @@ def main():
     options = ['Overall Stats', 'Season By Season']
     # Create a select box
     choice = st.selectbox('Select your option:', options)
+    choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
     start_year, end_year = st.slider('Select Years Range:', min_value=2008, max_value=2024, value=(2008, 2024))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=2008, max_value=2024, value=(1, 10000))
