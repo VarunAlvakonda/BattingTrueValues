@@ -267,6 +267,8 @@ def main():
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=2008, max_value=2024, value=(1, 10000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
+    if choice2 == 'Individual':
+        name = st.selectbox('Choose the Player From the list', data['striker'].unique())
     x = filtered_data2
     # A button to trigger the analysis
     if st.button('Analyse'):
@@ -296,9 +298,19 @@ def main():
         final_results4 = final_results4[(final_results4['Runs Scored'] >= start_runs) & (final_results4['Runs Scored'] <= end_runs)]
         if choice == 'Overall Stats':
             # Display the results
+            if choice2 == 'Individual':
+                if name in final_results4['Player'].unique():
+                    final_results4 = final_results4[final_results4['Player'] == name]
+                else:
+                    st.subheader('Player not in this list')
             final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results4.round(2))
         elif choice == 'Season By Season':
+            if choice2 == 'Individual':
+                if name in combined_data['Player'].unique():
+                    combined_data = combined_data[combined_data['Player'] == name]
+                else:
+                    st.subheader('Player not in this list')
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
 
