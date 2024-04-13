@@ -258,6 +258,9 @@ def main():
     data['over'] = data['ball2'] // 1 + 1
     
     # Selectors for user input
+    options = ['Overall Stats', 'Season By Season']
+    # Create a select box
+    choice = st.selectbox('Select your option:', options)
     start_year, end_year = st.slider('Select Years Range:', min_value=2008, max_value=2024, value=(2008, 2024))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
@@ -268,7 +271,7 @@ def main():
         # Call a hypothetical function to analyze data
         all_data = []
 
-# Analyze data and save results for each year
+        # Analyze data and save results for each year
         for year in filtered_data2['year'].unique():
             results = analyze_data_for_year3(year, filtered_data2)
             all_data.append(results)
@@ -289,8 +292,12 @@ def main():
         final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
         final_results4 = final_results4[['Player', 'Median Entry Point','Team','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR']]
 
-        # Display the results
-        st.dataframe(final_results4.round(2))
+        if choice == 'Overall Stats':
+            # Display the results
+            st.dataframe(final_results4.round(2))
+        elif choice == 'Season By Season':
+            st.dataframe(combined_data)
+
 
 # Run the main function
 if __name__ == '__main__':
