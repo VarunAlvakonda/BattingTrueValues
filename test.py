@@ -172,7 +172,7 @@ def main():
         data =  pd.read_csv('PSL.csv', low_memory=False)
     elif league == 'SA20':
         data =  pd.read_csv('SA20.csv', low_memory=False)
-    elif league == 'T20I':
+    elif league == 'T20I (test playing nations only)':
         data =  pd.read_csv('testplayingnations.csv', low_memory=False)
 
     data['B'] = 1
