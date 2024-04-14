@@ -160,6 +160,7 @@ def load_data(filename):
     return data
 
 # The main app function
+
 def main():
     st.title('Bowling True Values')
 
