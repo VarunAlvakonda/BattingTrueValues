@@ -161,9 +161,9 @@ def load_data(filename):
 
 # The main app function
 def main():
-    st.title('Franchise Leagues Bowling True Values')
+    st.title('Bowling True Values')
 
-    league = st.selectbox('Select your franchise league:', ['IPL','PSL','SA20'])
+    league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)'])
     # Load your data
     if league == 'IPL':
         data =  pd.read_csv('all_matches.csv', low_memory=False)
@@ -171,6 +171,9 @@ def main():
         data =  pd.read_csv('PSL.csv', low_memory=False)
     elif league == 'SA20':
         data =  pd.read_csv('SA20.csv', low_memory=False)
+    elif league == 'T20I':
+        data =  pd.read_csv('testplayingnations.csv', low_memory=False)
+
     data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
