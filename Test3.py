@@ -270,6 +270,8 @@ def main():
     # Create a select box
     choice = st.selectbox('Select your option:', options)
     choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
+    pos = list(range(1, 12))
+    # selected_options = st.multiselect('Choose options:', pos)
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=10000, value=(1, 10000))
