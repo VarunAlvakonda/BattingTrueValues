@@ -249,6 +249,7 @@ def main():
                 else:
                     st.subheader('Player not in this list')
             combined_data = combined_data.sort_values(by=['Wicket'], ascending=False)
+            combined_data = combined_data[(combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
             st.dataframe(combined_data)
 
 
