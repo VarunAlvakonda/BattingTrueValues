@@ -279,7 +279,9 @@ def main():
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
-        name = st.selectbox('Choose the Player From the list', data['striker'].unique())
+        players = data['striker'].unique()
+        player = st.multiselect("Select Players:", players)
+        # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
     x = filtered_data2
     # A button to trigger the analysis
     if st.button('Analyse'):
@@ -311,8 +313,8 @@ def main():
         if choice == 'Overall Stats':
             # Display the results
             if choice2 == 'Individual':
-                if name in final_results4['Player'].unique():
-                    final_results4 = final_results4[final_results4['Player'] == name]
+                if player in final_results4['Player'].unique():
+                    final_results4 = final_results4[final_results4['Player'].isin(player)]
                 else:
                     st.subheader('Player not in this list')
             final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
@@ -322,8 +324,8 @@ def main():
             combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
             combined_data = combined_data[(combined_data['BF'] >= start_runs1) & (combined_data['BF'] <= end_runs1)]
             if choice2 == 'Individual':
-                if name in combined_data['Player'].unique():
-                    combined_data = combined_data[combined_data['Player'] == name]
+                if player in combined_data['Player'].unique():
+                    combined_data = combined_data[combined_data['Player'].isin(player)]
                 else:
                     st.subheader('Player not in this list')
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
