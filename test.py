@@ -205,7 +205,7 @@ def main():
     choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
-    start_runs,end_runs = st.slider('Select Minimum Wickets:', min_value=1, max_value=300, value=(1, 300))
+    start_runs,end_runs = st.slider('Select Minimum Wickets:', min_value=0, max_value=300, value=(0, 300))
     start_runs1,end_runs1 = st.slider('Select Minimum Balls Bowled:', min_value=1, max_value=5000, value=(1, 5000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
