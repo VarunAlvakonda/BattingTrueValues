@@ -313,21 +313,25 @@ def main():
         if choice == 'Overall Stats':
             # Display the results
             if choice2 == 'Individual':
-                if player in final_results4['Player'].unique():
-                    final_results4 = final_results4[final_results4['Player'].isin(player)]
-                else:
-                    st.subheader('Player not in this list')
+                temp = []
+                for i in player:
+                    if i in final_results4['Player'].unique():
+                        temp.append(i)
+                    else:
+                        st.subheader(f'{i} not in this list')
+                final_results4 = final_results4[final_results4['Player'].isin(temp)]
             final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results4.round(2))
 
         elif choice == 'Season By Season':
             combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
             combined_data = combined_data[(combined_data['BF'] >= start_runs1) & (combined_data['BF'] <= end_runs1)]
-            if choice2 == 'Individual':
-                if player in combined_data['Player'].unique():
-                    combined_data = combined_data[combined_data['Player'].isin(player)]
+            temp = []
+            for i in player:
+                if i in combined_data['Player'].unique():
+                    temp.append(i)
                 else:
-                    st.subheader('Player not in this list')
+                    st.subheader(f'{i} not in this list')
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
 
