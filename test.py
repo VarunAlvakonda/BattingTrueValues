@@ -206,6 +206,7 @@ def main():
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Wickets:', min_value=1, max_value=300, value=(1, 300))
+    start_runs1,end_runs1 = st.slider('Select Minimum Balls Bowled:', min_value=1, max_value=5000, value=(1, 5000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
@@ -233,6 +234,7 @@ def main():
 
         final_results4 = final_results2.sort_values(by=['Wicket'],ascending=False)
         final_results4 = final_results4[(final_results4['Wicket'] >= start_runs) & (final_results4['Wicket'] <= end_runs)]
+        final_results4 = final_results4[(final_results4['B'] >= start_runs1) & (final_results4['B'] <= end_runs1)]
         if choice == 'Overall Stats':
             # Display the results
             if choice2 == 'Individual':
@@ -250,6 +252,7 @@ def main():
                     st.subheader('Player not in this list')
             combined_data = combined_data.sort_values(by=['Wicket'], ascending=False)
             combined_data = combined_data[(combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
+            combined_data = combined_data[(combined_data['B'] >= start_runs1) & (combined_data['B'] <= end_runs1)]
             st.dataframe(combined_data)
 
 
