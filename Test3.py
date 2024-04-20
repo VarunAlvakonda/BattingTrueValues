@@ -275,6 +275,7 @@ def main():
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=10000, value=(1, 10000))
+    start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=10000, value=(1, 10000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
@@ -306,6 +307,7 @@ def main():
         final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
         final_results4 = final_results4[['Player', 'Median Entry Point','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR','Team',]]
         final_results4 = final_results4[(final_results4['Runs Scored'] >= start_runs) & (final_results4['Runs Scored'] <= end_runs)]
+        final_results4 = final_results4[(final_results4['BF'] >= start_runs1) & (final_results4['BF'] <= end_runs1)]
         if choice == 'Overall Stats':
             # Display the results
             if choice2 == 'Individual':
@@ -318,6 +320,7 @@ def main():
 
         elif choice == 'Season By Season':
             combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
+            combined_data = combined_data[(combined_data['BF'] >= start_runs1) & (combined_data['BF'] <= end_runs1)]
             if choice2 == 'Individual':
                 if name in combined_data['Player'].unique():
                     combined_data = combined_data[combined_data['Player'] == name]
