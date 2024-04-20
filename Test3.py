@@ -322,6 +322,7 @@ def main():
                     combined_data = combined_data[combined_data['Player'] == name]
                 else:
                     st.subheader('Player not in this list')
+            combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
 
