@@ -317,12 +317,12 @@ def main():
             st.dataframe(final_results4.round(2))
 
         elif choice == 'Season By Season':
+            combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
             if choice2 == 'Individual':
                 if name in combined_data['Player'].unique():
                     combined_data = combined_data[combined_data['Player'] == name]
                 else:
                     st.subheader('Player not in this list')
-            combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
 
