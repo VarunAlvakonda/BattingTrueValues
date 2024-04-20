@@ -282,52 +282,52 @@ def main():
         name = st.selectbox('Choose the Player From the list', data['striker'].unique())
     x = filtered_data2
     # A button to trigger the analysis
-    # if st.button('Analyse'):
-    # Call a hypothetical function to analyze data
-    all_data = []
+    if st.button('Analyse'):
+        # Call a hypothetical function to analyze data
+        all_data = []
 
-    # Analyze data and save results for each year
-    for year in filtered_data2['year'].unique():
-        results = analyze_data_for_year3(year, filtered_data2)
-        all_data.append(results)
+        # Analyze data and save results for each year
+        for year in filtered_data2['year'].unique():
+            results = analyze_data_for_year3(year, filtered_data2)
+            all_data.append(results)
 
-    combined_data = pd.concat(all_data, ignore_index=True)
-    most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
+        combined_data = pd.concat(all_data, ignore_index=True)
+        most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
 
-    truevalues = combined_data.groupby(['Player'])[
-        ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum()
-    final_results = truemetrics(truevalues)
+        truevalues = combined_data.groupby(['Player'])[
+            ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum()
+        final_results = truemetrics(truevalues)
 
-    final_results2 = pd.merge(final_results,most_frequent_team, on='Player', how='left')
+        final_results2 = pd.merge(final_results,most_frequent_team, on='Player', how='left')
 
-    final_results3, f = calculate_entry_point_all_years(x)
-    final_results3.columns = ['Player', 'Median Entry Point']
+        final_results3, f = calculate_entry_point_all_years(x)
+        final_results3.columns = ['Player', 'Median Entry Point']
 
-    final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left').reset_index()
-    final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
-    final_results4 = final_results4[['Player', 'Median Entry Point','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR','Team',]]
-    final_results4 = final_results4[(final_results4['Runs Scored'] >= start_runs) & (final_results4['Runs Scored'] <= end_runs)]
-    final_results4 = final_results4[(final_results4['BF'] >= start_runs1) & (final_results4['BF'] <= end_runs1)]
-    if choice == 'Overall Stats':
-        # Display the results
-        if choice2 == 'Individual':
-            if name in final_results4['Player'].unique():
-                final_results4 = final_results4[final_results4['Player'] == name]
-            else:
-                st.subheader('Player not in this list')
+        final_results4 = pd.merge(final_results3, final_results2, on='Player', how='left').reset_index()
         final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
-        st.dataframe(final_results4.round(2))
+        final_results4 = final_results4[['Player', 'Median Entry Point','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR','Team',]]
+        final_results4 = final_results4[(final_results4['Runs Scored'] >= start_runs) & (final_results4['Runs Scored'] <= end_runs)]
+        final_results4 = final_results4[(final_results4['BF'] >= start_runs1) & (final_results4['BF'] <= end_runs1)]
+        if choice == 'Overall Stats':
+            # Display the results
+            if choice2 == 'Individual':
+                if name in final_results4['Player'].unique():
+                    final_results4 = final_results4[final_results4['Player'] == name]
+                else:
+                    st.subheader('Player not in this list')
+            final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
+            st.dataframe(final_results4.round(2))
 
-    elif choice == 'Season By Season':
-        combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
-        combined_data = combined_data[(combined_data['BF'] >= start_runs1) & (combined_data['BF'] <= end_runs1)]
-        if choice2 == 'Individual':
-            if name in combined_data['Player'].unique():
-                combined_data = combined_data[combined_data['Player'] == name]
-            else:
-                st.subheader('Player not in this list')
-        combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
-        st.dataframe(combined_data)
+        elif choice == 'Season By Season':
+            combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
+            combined_data = combined_data[(combined_data['BF'] >= start_runs1) & (combined_data['BF'] <= end_runs1)]
+            if choice2 == 'Individual':
+                if name in combined_data['Player'].unique():
+                    combined_data = combined_data[combined_data['Player'] == name]
+                else:
+                    st.subheader('Player not in this list')
+            combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
+            st.dataframe(combined_data)
 
 
 # Run the main function
