@@ -154,7 +154,7 @@ def analyze_data_for_year(year, data):
 
 
 # Load the data
-@st.cache
+@st.cache_data
 def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
     return data
@@ -167,13 +167,13 @@ def main():
     league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)'])
     # Load your data
     if league == 'IPL':
-        data =  pd.read_csv('all_matches.csv', low_memory=False)
+        data =  load_data('all_matches.csv')
     elif league == 'PSL':
-        data =  pd.read_csv('PSL.csv', low_memory=False)
+        data =  load_data('PSL.csv')
     elif league == 'SA20':
-        data =  pd.read_csv('SA20.csv', low_memory=False)
+        data =  load_data('SA20.csv')
     elif league == 'T20I (test playing nations only)':
-        data =  pd.read_csv('testplayingnations.csv', low_memory=False)
+        data =  load_data('testplayingnations.csv')
 
     data['B'] = 1
 
