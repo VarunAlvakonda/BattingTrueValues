@@ -223,7 +223,7 @@ all_data2 = []
 all_data3 = []
 
 # Load the data
-@st.cache
+@st.cache_data
 def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
     return data
