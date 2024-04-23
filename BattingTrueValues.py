@@ -132,11 +132,18 @@ def analyze_data_for_year3(year2, data2):
     combined_df = pd.merge(player_runs, player_outs, on=['Player', 'Venue', 'Over', 'Types'], how='left')
     # Merge the two DataFrames on the 'Player' column
     combined_df2 = pd.merge(over_runs, over_outs, on=['Venue', 'Over', 'Types'], how='left')
-    # Calculate BSR and OPB for each ball at each Venue
-    combined_df2['BSR'] = combined_df2['Runs'] / combined_df2['B']
-    combined_df2['OPB'] = combined_df2['Outs'] / combined_df2['B']
 
     combined_df3 = pd.merge(combined_df, combined_df2, on=['Venue', 'Over', 'Types'], how='left')
+    combined_df3['Outs'].fillna(0, inplace=True)
+    combined_df3['Out'].fillna(0, inplace=True)
+
+    combined_df3['Over_Runs'] =combined_df3['Runs'] - combined_df3['Runs Scored']
+    combined_df3['Over_B'] =combined_df3['B'] - combined_df3['BF']
+    combined_df3['Over_Outs'] =combined_df3['Outs'] - combined_df3['Out']
+
+    combined_df3['BSR'] = combined_df3['Over_Runs'] / combined_df3['Over_B']
+    combined_df3['OPB'] = combined_df3['Over_Outs'] / combined_df3['Over_B']
+
     combined_df3['Expected Runs'] = combined_df3['BF'] * combined_df3['BSR']
     combined_df3['Expected Outs'] = combined_df3['BF'] * combined_df3['OPB']
 
