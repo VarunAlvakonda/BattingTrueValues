@@ -125,6 +125,35 @@ def analyze_data_for_year3(year2, data2):
     over_outs = dismissed_data.groupby(['venue', 'over'])[['Out']].sum().reset_index()
     over_outs.columns = ['Venue', 'Over', 'Outs']
 
+    temp = combineddata.copy()
+    temp['Runs'] = temp.groupby(['striker', 'match_id', 'innings'], as_index=False)['runs_off_bat'].cumsum()
+    temp['Balls'] = temp.groupby(['striker', 'match_id', 'innings'], as_index=False)['B'].cumsum()
+    temp['Wickets'] = temp.groupby(['striker', 'match_id', 'innings'], as_index=False)['Out'].cumsum()
+
+    temp.to_csv('asdkasda.csv')
+
+    temp2 = temp[['match_id', 'innings', 'striker', 'over','Runs', 'Balls']]
+    temp2 = temp2.drop_duplicates()
+    temp2.round(2).to_csv(f'ballbyball{year2}.csv')
+    temp2['count'] = 1
+    temp2.loc[temp2['Balls'] == 0, 'count'] = 0
+    temp3 = temp2.groupby(['striker', 'Balls'])[['Runs', 'count']].sum().reset_index()
+    temp3['Ave Runs'] = temp3['Runs'] / temp3['count']
+    temp3['SR'] = temp3['Ave Runs'] / temp3['Balls'] * 100
+    temp3.round(2).to_csv(f'averagesr{year2}.csv')
+
+    # Creating a pivot table with Balls as the index and players as columns
+    pivot_table = temp3.pivot_table(values='Ave Runs', index='Balls', columns='striker')
+
+    # Saving the pivot table to a CSV file
+    pivot_table.round(2).to_csv(f'player_runs_by_balls{year2}.csv')
+
+    # Create a pivot table with Balls as the index and strikers as columns with their average runs
+    pivot_table = temp3.pivot_table(values='SR', index='Balls', columns='striker')
+
+    # Saving the strike rates to a CSV file
+    pivot_table.round(2).to_csv(f'strike_rate_by_balls{year2}.csv')
+
     # Group by player and aggregate the runs scored
     player_runs = combineddata.groupby(['striker', 'venue', 'over'])[['runs_off_bat', 'B']].sum().reset_index()
     # Rename the columns for clarity
@@ -139,10 +168,18 @@ def analyze_data_for_year3(year2, data2):
     # Merge the two DataFrames on the 'Player' column
     combined_df2 = pd.merge(over_runs, over_outs, on=['Venue', 'Over'], how='left')
     # Calculate BSR and OPB for each ball at each venue
-    combined_df2['BSR'] = combined_df2['Runs'] / combined_df2['B']
-    combined_df2['OPB'] = combined_df2['Outs'] / combined_df2['B']
 
     combined_df3 = pd.merge(combined_df, combined_df2, on=['Venue', 'Over'], how='left')
+    combined_df3['Outs'].fillna(0, inplace=True)
+    combined_df3['Out'].fillna(0, inplace=True)
+
+    combined_df3['Over_Runs'] =combined_df3['Runs'] - combined_df3['Runs Scored']
+    combined_df3['Over_B'] =combined_df3['B'] - combined_df3['BF']
+    combined_df3['Over_Outs'] =combined_df3['Outs'] - combined_df3['Out']
+
+    combined_df3['BSR'] = combined_df3['Over_Runs'] / combined_df3['Over_B']
+    combined_df3['OPB'] = combined_df3['Over_Outs'] / combined_df3['Over_B']
+
     combined_df3['Expected Runs'] = combined_df3['BF'] * combined_df3['BSR']
     combined_df3['Expected Outs'] = combined_df3['BF'] * combined_df3['OPB']
 
