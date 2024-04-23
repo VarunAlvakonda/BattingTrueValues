@@ -123,13 +123,21 @@ def analyze_data_for_year(year, data):
     # Merge the two DataFrames on the 'Player' column
     combined_df2 = pd.merge(over_runs, over_outs, on=['Venue', 'Over'], how='left')
 
-    # Calculate BER and OPB for each ball
-    combined_df2['BER'] = combined_df2['Runs'] / combined_df2['Balls']
-    combined_df2['OPB'] = combined_df2['Wickets'] / combined_df2['Balls']
-
     # Merge the grouped data with the original data
     merged_data = pd.merge(combined_df, combined_df2, on=['Venue', 'Over'], how='left').reset_index()
-    print(merged_data.columns)
+    merged_data['Wickets'].fillna(0, inplace=True)
+    merged_data['Wicket'].fillna(0, inplace=True)
+
+    merged_data['Over_Runs'] =merged_data['Runs'] - merged_data['Runs Conceded']
+    merged_data['Over_B'] =merged_data['Balls'] - merged_data['B']
+    merged_data['Over_Wickets'] =merged_data['Wickets'] - merged_data['Wicket']
+
+    merged_data['BER'] = merged_data['Over_Runs'] / merged_data['Over_B']
+    merged_data['OPB'] = merged_data['Over_Wickets'] / merged_data['Over_B']
+
+    # Calculate Expected RC and Expected Wickets for each row
+    merged_data['Expected Runs Conceded'] = merged_data['B'] * merged_data['BER']
+    merged_data['Expected Wickets'] = merged_data['B'] * merged_data['OPB']
 
     # Calculate Expected RC and Expected Wickets for each row
     merged_data['Expected Runs Conceded'] = merged_data['B'] * merged_data['BER']
