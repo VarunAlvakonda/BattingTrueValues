@@ -175,13 +175,13 @@ def main():
     league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)'])
     # Load your data
     if league == 'IPL':
-        data =  load_data('all_matches.csv')
+        data =  pd.read_csv('all_matches.csv', low_memory=False)
     elif league == 'PSL':
-        data =  load_data('PSL.csv')
+        data =  pd.read_csv('PSL.csv', low_memory=False)
     elif league == 'SA20':
-        data =  load_data('SA20.csv')
+        data =  pd.read_csv('SA20.csv', low_memory=False)
     elif league == 'T20I (test playing nations only)':
-        data =  load_data('testplayingnations.csv')
+        data =  pd.read_csv('testplayingnations.csv', low_memory=False)
 
     data['B'] = 1
 
