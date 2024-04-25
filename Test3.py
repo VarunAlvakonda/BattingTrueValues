@@ -198,8 +198,8 @@ def analyze_data_for_year3(year2, data2):
     return final_results4.round(2)
 
 def analyze_data_for_year4(year2, data2):
-    combineddata2 = data2[data2['innings'] < 3].copy()
-    combineddata = combineddata2[combineddata2['year'] == year2].copy()
+    # combineddata2 = data2[data2['innings'] < 3].copy()
+    combineddata = data2[data2['year'] == year2].copy()
     inns = combineddata.groupby(['striker', 'match_id','phase'])[['runs_off_bat']].sum().reset_index()
     inns['I'] = 1
     inns2 = inns.groupby(['striker','phase'])[['I']].sum().reset_index()
@@ -319,6 +319,9 @@ def main():
         players = data['striker'].unique()
         player = st.multiselect("Select Players:", players)
         # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
+    inns = [1,2]
+    inn = st.multiselect("Select innings:", inns)
+    filtered_data2 = filtered_data2[filtered_data2['innings'].isin(inn)].copy()
     x = filtered_data2
     # A button to trigger the analysis
     if st.button('Analyse'):
