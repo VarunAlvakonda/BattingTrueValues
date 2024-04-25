@@ -362,11 +362,6 @@ def main():
                 final_results4 = final_results4[final_results4['Player'].isin(temp)]
             final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results4.round(2))
-            teams = final_results4['Team'].unique()
-            team = st.multiselect("Select Team:", teams)
-            if team:
-                final_results4 = final_results4[final_results4['Team'].isin(team)]
-                st.dataframe(final_results4.round(2))
 
         elif choice == 'Season By Season':
             combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
@@ -381,11 +376,6 @@ def main():
                 combined_data = combined_data[combined_data['Player'].isin(temp)]
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
-            teams = combined_data['Team'].unique()
-            team = st.multiselect("Select Team:", teams)
-            if team:
-                combined_data = combined_data[combined_data['Team'].isin(team)]
-                st.dataframe(combined_data)
 
 
 # Run the main function
