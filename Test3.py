@@ -376,6 +376,10 @@ def main():
                 combined_data = combined_data[combined_data['Player'].isin(temp)]
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
+            teams = data['batting_team'].unique()
+            team = st.multiselect("Select Team:", teams)
+            combined_data = combined_data[combined_data['batting_team'].isin(team)]
+            st.dataframe(combined_data)
 
 
 # Run the main function
