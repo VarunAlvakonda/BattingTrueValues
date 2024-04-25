@@ -76,8 +76,8 @@ def analyze_data_for_year2(data):
 
 def analyze_data_for_year(year, data):
     # Filter data for the specific year
-    combineddata2 = data[data['innings'] < 3].copy()
-    data_year = combineddata2[combineddata2['year'] == year].copy()
+    # combineddata2 = data[data['innings'] < 3].copy()
+    data_year = data[data['year'] == year].copy()
 
     analysis_results = analyze_data_for_year2(data_year)
     analysis_results.columns = ['Player', 'Median Entry Point']
@@ -217,6 +217,10 @@ def main():
     start_runs1,end_runs1 = st.slider('Select Minimum Balls Bowled:', min_value=1, max_value=5000, value=(1, 5000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
+    inns = [1,2]
+    inn = st.multiselect("Select innings:", inns)
+    filtered_data2 = filtered_data2[filtered_data2['innings'].isin(inn)].copy()
+
     if choice2 == 'Individual':
         players = data['bowler'].unique()
         player = st.multiselect("Select Players:", players)
