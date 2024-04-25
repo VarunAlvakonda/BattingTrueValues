@@ -218,12 +218,13 @@ def main():
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     inns = [1,2]
-    inn = st.multiselect("Select innings:", inns)
 
     if choice2 == 'Individual':
         players = data['bowler'].unique()
         player = st.multiselect("Select Players:", players)
         # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
+
+    inn = st.multiselect("Select innings:", inns)
 
     filtered_data2 = filtered_data2[filtered_data2['innings'].isin(inn)].copy()
     x = filtered_data2
