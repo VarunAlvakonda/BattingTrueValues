@@ -225,7 +225,9 @@ def main():
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
-        name = st.selectbox('Choose the Player From the list', data['Batter'].unique())
+        players = data['Batter'].unique()
+        player = st.multiselect("Select Players:", players)
+        # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
     x = filtered_data2
     # A button to trigger the analysis
     if st.button('Analyse'):
@@ -246,19 +248,25 @@ def main():
         final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
         if choice == 'Overall Stats':
             # Display the results
-            if choice2 == 'Individual':
-                if name in final_results['Player'].unique():
-                    final_results = final_results[final_results['Player'] == name]
+            temp = []
+            for i in player:
+                if i in final_results['Player'].unique():
+                    temp.append(i)
                 else:
-                    st.subheader('Player not in this list')
+                    st.subheader(f'{i} not in this list')
+            final_results = final_results[final_results['Player'].isin(temp)]
+
             final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results.round(2))
         elif choice == 'Season By Season':
             if choice2 == 'Individual':
-                if name in combined_data['Player'].unique():
-                    combined_data = combined_data[combined_data['Player'] == name]
-                else:
-                    st.subheader('Player not in this list')
+                temp = []
+                for i in player:
+                    if i in combined_data['Player'].unique():
+                        temp.append(i)
+                    else:
+                        st.subheader(f'{i} not in this list')
+                combined_data = combined_data[combined_data['Player'].isin(temp)]
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
 
