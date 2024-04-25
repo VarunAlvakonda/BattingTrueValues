@@ -378,8 +378,9 @@ def main():
             st.dataframe(combined_data)
             teams = data['batting_team'].unique()
             team = st.multiselect("Select Team:", teams)
-            combined_data = combined_data[combined_data['batting_team'].isin(team)]
-            st.dataframe(combined_data)
+            if team:
+                combined_data = combined_data[combined_data['batting_team'].isin(team)]
+                st.dataframe(combined_data)
 
 
 # Run the main function
