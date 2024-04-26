@@ -292,7 +292,7 @@ def load_data(filename):
 # The main app function
 
 def main():
-    st.title('Bowling True Values')
+    st.title('Batting True Values')
 
     # Load and concatenate data for all selected leagues
     league_files = {
