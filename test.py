@@ -231,53 +231,53 @@ def main():
         filtered_data2 = filtered_data2[filtered_data2['innings'].isin(inn)].copy()
     x = filtered_data2
     # A button to trigger the analysis
-    if st.button('Analyse'):
-        # Call a hypothetical function to analyze data
-        all_data = []
+    # if st.button('Analyse'):
+    # Call a hypothetical function to analyze data
+    all_data = []
 
-        # Analyze data and save results for each year
-        for year in filtered_data2['year'].unique():
-            results = analyze_data_for_year(year, filtered_data2)
-            all_data.append(results)
+    # Analyze data and save results for each year
+    for year in filtered_data2['year'].unique():
+        results = analyze_data_for_year(year, filtered_data2)
+        all_data.append(results)
 
-        combined_data = pd.concat(all_data, ignore_index=True)
-        most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
+    combined_data = pd.concat(all_data, ignore_index=True)
+    most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
 
-        truevalues = combined_data.groupby('Player')[['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
+    truevalues = combined_data.groupby('Player')[['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
 
-        final_results = truemetrics(truevalues)
+    final_results = truemetrics(truevalues)
 
-        final_results2 = pd.merge(most_frequent_team, final_results, on='Player', how='left')
+    final_results2 = pd.merge(most_frequent_team, final_results, on='Player', how='left')
 
 
-        final_results4 = final_results2.sort_values(by=['Wicket'],ascending=False)
-        final_results4 = final_results4[(final_results4['Wicket'] >= start_runs) & (final_results4['Wicket'] <= end_runs)]
-        final_results4 = final_results4[(final_results4['B'] >= start_runs1) & (final_results4['B'] <= end_runs1)]
-        if choice == 'Overall Stats':
-            # Display the results
-            if choice2 == 'Individual':
-                temp = []
-                for i in player:
-                    if i in final_results4['Player'].unique():
-                        temp.append(i)
-                    else:
-                        st.subheader(f'{i} not in this list')
-                final_results4 = final_results4[final_results4['Player'].isin(temp)]
-            final_results4 = final_results4.sort_values(by=['Wicket'], ascending=False)
-            st.dataframe(final_results4.round(2))
-
-        elif choice == 'Season By Season':
+    final_results4 = final_results2.sort_values(by=['Wicket'],ascending=False)
+    final_results4 = final_results4[(final_results4['Wicket'] >= start_runs) & (final_results4['Wicket'] <= end_runs)]
+    final_results4 = final_results4[(final_results4['B'] >= start_runs1) & (final_results4['B'] <= end_runs1)]
+    if choice == 'Overall Stats':
+        # Display the results
+        if choice2 == 'Individual':
             temp = []
             for i in player:
-                if i in combined_data['Player'].unique():
+                if i in final_results4['Player'].unique():
                     temp.append(i)
                 else:
                     st.subheader(f'{i} not in this list')
-            combined_data = combined_data[combined_data['Player'].isin(temp)]
-            combined_data = combined_data.sort_values(by=['Wicket'], ascending=False)
-            combined_data = combined_data[(combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
-            combined_data = combined_data[(combined_data['B'] >= start_runs1) & (combined_data['B'] <= end_runs1)]
-            st.dataframe(combined_data)
+            final_results4 = final_results4[final_results4['Player'].isin(temp)]
+        final_results4 = final_results4.sort_values(by=['Wicket'], ascending=False)
+        st.dataframe(final_results4.round(2))
+
+    elif choice == 'Season By Season':
+        temp = []
+        for i in player:
+            if i in combined_data['Player'].unique():
+                temp.append(i)
+            else:
+                st.subheader(f'{i} not in this list')
+        combined_data = combined_data[combined_data['Player'].isin(temp)]
+        combined_data = combined_data.sort_values(by=['Wicket'], ascending=False)
+        combined_data = combined_data[(combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
+        combined_data = combined_data[(combined_data['B'] >= start_runs1) & (combined_data['B'] <= end_runs1)]
+        st.dataframe(combined_data)
 
 
 # Run the main function
