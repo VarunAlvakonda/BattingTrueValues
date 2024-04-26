@@ -309,7 +309,9 @@ def main():
 
     data = load_data(league_files[selected_leagues])
     years = data['year'].unique()
-    
+    data2 = data.groupby('striker')[['runs_off_bat', 'B']].sum().reset_index()
+    run = min(data2['runs_off_bat'])
+    ball = min(data2['B'])
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
     # Create a select box
@@ -319,8 +321,8 @@ def main():
     # selected_options = st.multiselect('Choose options:', pos)
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
-    start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=10000, value=(1, 10000))
-    start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=10000, value=(1, 10000))
+    start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=max(run), value=(1, 10000))
+    start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=max(ball), value=(1, 10000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
