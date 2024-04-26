@@ -212,6 +212,7 @@ def main():
     selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
 
     data = load_data(league_files[selected_leagues])
+    years = data['year'].unique()
     # Load your data
     # if league == 'IPL':
     #     data =  load_data('all_matches.csv')
