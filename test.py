@@ -2,6 +2,7 @@ import math
 
 import pandas as pd
 import streamlit as st
+import plotly.express as px
 
 # Extract the year from the 'start_date' column
 
@@ -263,7 +264,17 @@ def main():
                 final_results4 = final_results4[final_results4['Player'].isin(temp)]
             final_results4 = final_results4.sort_values(by=['Wicket'], ascending=False)
             st.dataframe(final_results4.round(2))
-            st.scatter_chart(final_results4[['Player','True SR','True Ave']].round(2))
+            fig = px.scatter(
+                final_results4,
+                x='True SR',
+                y='True Ave',
+                text='Player'
+            )
+
+            # To show the player names on hover
+            fig.update_traces(marker_size=10, hoverinfo='text')
+
+            st.plotly_chart(fig)
 
         elif choice == 'Season By Season':
             temp = []
@@ -277,7 +288,17 @@ def main():
             combined_data = combined_data[(combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
             combined_data = combined_data[(combined_data['B'] >= start_runs1) & (combined_data['B'] <= end_runs1)]
             st.dataframe(combined_data)
-            st.scatter_chart(combined_data[['Player','True SR','True Ave']].round(2))
+            fig = px.scatter(
+                combined_data,
+                x='True SR',
+                y='True Ave',
+                text='Player'
+            )
+
+            # To show the player names on hover
+            fig.update_traces(marker_size=10, hoverinfo='text')
+
+            st.plotly_chart(fig)
 
 
 # Run the main function
