@@ -264,17 +264,18 @@ def main():
                 final_results4 = final_results4[final_results4['Player'].isin(temp)]
             final_results4 = final_results4.sort_values(by=['Wicket'], ascending=False)
             st.dataframe(final_results4.round(2))
-            fig = px.scatter(
-                final_results4,
-                x='True SR',
-                y='True Ave',
-                text='Player'
-            )
+            if st.button('Chart'):
+                fig = px.scatter(
+                    final_results4,
+                    x='True SR',
+                    y='True Ave',
+                    text='Player'
+                )
 
-            # To show the player names on hover
-            fig.update_traces(marker_size=10, hoverinfo='text')
+                # To show the player names on hover
+                fig.update_traces(marker_size=10, hoverinfo='text')
 
-            st.plotly_chart(fig)
+                st.plotly_chart(fig)
 
         elif choice == 'Season By Season':
             temp = []
@@ -288,17 +289,19 @@ def main():
             combined_data = combined_data[(combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
             combined_data = combined_data[(combined_data['B'] >= start_runs1) & (combined_data['B'] <= end_runs1)]
             st.dataframe(combined_data)
-            fig = px.scatter(
-                combined_data,
-                x='True SR',
-                y='True Ave',
-                text='Player'
-            )
 
-            # To show the player names on hover
-            fig.update_traces(marker_size=10, hoverinfo='text')
+            if st.button('Chart'):
+                fig = px.scatter(
+                    combined_data,
+                    x='True SR',
+                    y='True Ave',
+                    text='Player'
+                )
 
-            st.plotly_chart(fig)
+                # To show the player names on hover
+                fig.update_traces(marker_size=10, hoverinfo='text')
+
+                st.plotly_chart(fig)
 
 
 # Run the main function
