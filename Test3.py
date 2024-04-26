@@ -375,9 +375,8 @@ def main():
                 final_results4 = final_results4[final_results4['Player'].isin(temp)]
             final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results4.round(2))
-            if st.button('Generate Chart'):
-                fig = px.scatter(final_results4.round(2), x='True Ave', y='True SR', text='Player', hover_data=['Player','Runs Scored','BF'])
-                st.plotly_chart(fig, use_container_width=True)
+            fig = px.scatter(final_results4.round(2), x='True Ave', y='True SR', text='Player', hover_data=['Player','Runs Scored','BF'])
+            st.plotly_chart(fig, use_container_width=True)
 
         elif choice == 'Season By Season':
             combined_data = combined_data[(combined_data['Runs Scored'] >= start_runs) & (combined_data['Runs Scored'] <= end_runs)]
@@ -393,9 +392,8 @@ def main():
             combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(combined_data)
             st.dataframe(combined_data.round(2))
-            if st.button('Generate Chart'):
-                fig = px.scatter(combined_data.round(2), x='True Ave', y='True SR', text='Player', hover_data=['Player','Runs Scored','BF'])
-                st.plotly_chart(fig, use_container_width=True)
+            fig = px.scatter(combined_data.round(2), x='True Ave', y='True SR', text='Player', hover_data=['Player','Runs Scored','BF'])
+            st.plotly_chart(fig, use_container_width=True)
 
 # Run the main function
 if __name__ == '__main__':
