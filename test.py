@@ -263,7 +263,7 @@ def main():
                 final_results4 = final_results4[final_results4['Player'].isin(temp)]
             final_results4 = final_results4.sort_values(by=['Wicket'], ascending=False)
             st.dataframe(final_results4.round(2))
-            st.line_chart(final_results4.round(2))
+            st.line_chart(final_results4[['Player','True SR','True Ave']].round(2))
 
         elif choice == 'Season By Season':
             temp = []
@@ -277,7 +277,7 @@ def main():
             combined_data = combined_data[(combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
             combined_data = combined_data[(combined_data['B'] >= start_runs1) & (combined_data['B'] <= end_runs1)]
             st.dataframe(combined_data)
-            st.line_chart(combined_data)
+            st.line_chart(combined_data[['Player','True SR','True Ave']].round(2))
 
 
 # Run the main function
