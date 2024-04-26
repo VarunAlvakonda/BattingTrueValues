@@ -172,16 +172,23 @@ def load_data(filename):
 def main():
     st.title('Bowling True Values')
 
-    league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)'])
-    # Load your data
-    if league == 'IPL':
-        data =  pd.read_csv('all_matches.csv', low_memory=False)
-    elif league == 'PSL':
-        data =  pd.read_csv('PSL.csv', low_memory=False)
-    elif league == 'SA20':
-        data =  pd.read_csv('SA20.csv', low_memory=False)
-    elif league == 'T20I (test playing nations only)':
-        data =  pd.read_csv('testplayingnations.csv', low_memory=False)
+    league = st.multiselect('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)', 'T20 WCs', 'CPL','LPL'])
+    dic = {'IPL':'all_matches.csv','PSL':'PSL.csv','SA20':'SA20.csv','T20I (test playing nations only)':'testplayingnations.csv', 'T20 WCs':'t20wcs.csv', 'CPL':'CPL.csv','LPL':'LPL.csv'}
+
+    leagues = []
+    for l in league:
+        data = pd.read_csv(dic[l], low_memory=False)
+        leagues.append(data)
+    data =pd.concat(leagues, ignore_index=True)
+    # # Load your data
+    # if league == 'IPL':
+    #     data =  pd.read_csv('all_matches.csv', low_memory=False)
+    # elif league == 'PSL':
+    #     data =  pd.read_csv('PSL.csv', low_memory=False)
+    # elif league == 'SA20':
+    #     data =  pd.read_csv('SA20.csv', low_memory=False)
+    # elif league == 'T20I (test playing nations only)':
+    #     data =  pd.read_csv('testplayingnations.csv', low_memory=False)
 
     data['B'] = 1
 
