@@ -181,6 +181,7 @@ def main():
             d = pd.read_csv(dic[l], low_memory=False)
             leagues.append(d)
         data =pd.concat(leagues, ignore_index=True)
+        data = data.drop_duplicates()
         # # Load your data
         # if league == 'IPL':
         #     data =  pd.read_csv('all_matches.csv', low_memory=False)
