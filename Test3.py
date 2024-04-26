@@ -269,7 +269,7 @@ def load_data(filename):
 def main():
     st.title('Batting True Values')
 
-    league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)'])
+    league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)', 'T20 WCs', 'CPL','LPL'])
     if league == 'IPL':
         data =  load_data('all_matches.csv')
     elif league == 'PSL':
