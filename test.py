@@ -34,6 +34,7 @@ def calculate_entry_point_all_years(data):
     return avg_entry_point_deliveries[['bowler', 'average_over']]
 
 
+
 def calculate_first_appearance(data):
     # Identifying the first instance each batter faces a delivery in each match
     first_appearance = data.drop_duplicates(subset=['match_id', 'innings', 'bowler'])
