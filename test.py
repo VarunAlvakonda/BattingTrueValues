@@ -252,6 +252,8 @@ def main():
             most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
 
             truevalues = combined_data.groupby('Player')[['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
+            st.write(f"Total wickets after groupby: {truevalues['Wicket'].sum()}")
+
 
             final_results = truemetrics(truevalues)
 
