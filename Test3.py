@@ -321,7 +321,8 @@ def main():
         # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
     inns = [1,2]
     inn = st.multiselect("Select innings:", inns)
-    filtered_data2 = filtered_data2[filtered_data2['innings'].isin(inn)].copy()
+    if inn:
+        filtered_data2 = filtered_data2[filtered_data2['innings'].isin(inn)].copy()
     x = filtered_data2
     # A button to trigger the analysis
     if st.button('Analyse'):
