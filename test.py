@@ -178,8 +178,8 @@ def main():
     if league:
         leagues = []
         for l in league:
-            data = pd.read_csv(dic[l], low_memory=False)
-            leagues.append(data)
+            d = pd.read_csv(dic[l], low_memory=False)
+            leagues.append(d)
         data =pd.concat(leagues, ignore_index=True)
         # # Load your data
         # if league == 'IPL':
