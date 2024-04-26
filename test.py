@@ -3,12 +3,15 @@ import math
 import pandas as pd
 import streamlit as st
 
+
 # Extract the year from the 'start_date' column
 
 def truemetrics(truevalues):
     truevalues['ER'] = truevalues['Runs Conceded'] / (truevalues['B'] / 6)
     truevalues['Expected ER'] = truevalues['Expected Runs Conceded'] / (truevalues['B'] / 6)
-    truevalues['True ER'] = (truevalues['Expected Runs Conceded'] / (truevalues['B'] / 6) - truevalues['Runs Conceded'] / (truevalues['B'] / 6))
+    truevalues['True ER'] = (
+                truevalues['Expected Runs Conceded'] / (truevalues['B'] / 6) - truevalues['Runs Conceded'] / (
+                    truevalues['B'] / 6))
     truevalues['True Wickets'] = (truevalues['Wicket'] - truevalues['Expected Wickets'])
     truevalues['True W/ 4 overs'] = truevalues['True Wickets'] / (truevalues['B'] / 24)
     return truevalues
@@ -32,7 +35,6 @@ def calculate_entry_point_all_years(data):
         lambda x: round((x // 6) + (x % 6) / 10, 1))
 
     return avg_entry_point_deliveries[['bowler', 'average_over']]
-
 
 
 def calculate_first_appearance(data):
@@ -85,14 +87,14 @@ def analyze_data_for_year(year, data):
 
     # Ensure the 'ball' column is treated as a string
     # Filter out rows where a player was dismissed
-    valid = ['retired hurt', 'run out' , 'retired out' , 'hit wicket' ,'obstructing the field']
+    valid = ['retired hurt', 'run out', 'retired out', 'hit wicket', 'obstructing the field']
 
     dismissed_data = data_year[data_year['player_dismissed'].notnull()]
     dismissed_data = dismissed_data[~dismissed_data['wicket_type'].isin(valid)]
     dismissed_data['Wicket'] = 1
 
-    combineddata3 = pd.merge(data_year, dismissed_data[['match_id', 'innings', 'ball', 'bowler','Wicket']],
-                             on=['match_id', 'innings', 'bowler','ball'], how='left')
+    combineddata3 = pd.merge(data_year, dismissed_data[['match_id', 'innings', 'ball', 'bowler', 'Wicket']],
+                             on=['match_id', 'innings', 'bowler', 'ball'], how='left')
     combineddata3['Wicket'].fillna(0, inplace=True)
 
     player_outs = combineddata3.groupby(['bowler', 'venue', 'over'])[['Wicket']].sum().reset_index()
@@ -106,8 +108,7 @@ def analyze_data_for_year(year, data):
     temp['Balls'] = temp.groupby(['bowler', 'match_id', 'innings'], as_index=False)['B'].cumsum()
     temp['Wickets'] = temp.groupby(['bowler', 'match_id', 'innings'], as_index=False)['Wicket'].cumsum()
 
-
-    temp2 = temp[['match_id', 'innings', 'bowler', 'over','Runs', 'Balls']]
+    temp2 = temp[['match_id', 'innings', 'bowler', 'over', 'Runs', 'Balls']]
     temp2 = temp2.drop_duplicates()
     temp2.round(2).to_csv(f'ballbyballbowling{year}.csv')
     # Group by player and aggregate the runs scored
@@ -129,9 +130,9 @@ def analyze_data_for_year(year, data):
     merged_data['Wickets'].fillna(0, inplace=True)
     merged_data['Wicket'].fillna(0, inplace=True)
 
-    merged_data['Over_Runs'] =merged_data['Runs'] - merged_data['Runs Conceded']
-    merged_data['Over_B'] =merged_data['Balls'] - merged_data['B']
-    merged_data['Over_Wickets'] =merged_data['Wickets'] - merged_data['Wicket']
+    merged_data['Over_Runs'] = merged_data['Runs'] - merged_data['Runs Conceded']
+    merged_data['Over_B'] = merged_data['Balls'] - merged_data['B']
+    merged_data['Over_Wickets'] = merged_data['Wickets'] - merged_data['Wicket']
 
     merged_data['BER'] = merged_data['Over_Runs'] / merged_data['Over_B']
     merged_data['OPB'] = merged_data['Over_Wickets'] / merged_data['Over_B']
@@ -151,10 +152,11 @@ def analyze_data_for_year(year, data):
     truevalues = merged_data.groupby(['Player'])[
         ['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum().reset_index()
     ball_bins = [0, 6, 11, 16, 20]
-    ball_labels = ['1 to 6','7 to 11','12 to 16','17 to 20']
-    merged_data['phase'] = pd.cut(merged_data['Over'], bins=ball_bins, labels=ball_labels, include_lowest=True, right=True)
+    ball_labels = ['1 to 6', '7 to 11', '12 to 16', '17 to 20']
+    merged_data['phase'] = pd.cut(merged_data['Over'], bins=ball_bins, labels=ball_labels, include_lowest=True,
+                                  right=True)
 
-    truevalues2 = merged_data.groupby(['Player','phase'])[
+    truevalues2 = merged_data.groupby(['Player', 'phase'])[
         ['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum().reset_index()
     final_results = truemetrics(truevalues)
     final_results3 = pd.merge(analysis_results, final_results, on='Player', how='left')
@@ -185,18 +187,16 @@ def load_data(filename):
     # Remove any potential duplicate rows
     data = data.drop_duplicates()
 
-
     data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
 
     return data
 
+
 # The main app function
 
 def main():
     st.title('Bowling True Values')
-
-    league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)', 'T20 WCs', 'CPL','LPL'])
 
     # Load and concatenate data for all selected leagues
     league_files = {
@@ -233,14 +233,15 @@ def main():
     options = ['Overall Stats', 'Season By Season']
     # Create a select box
     choice = st.selectbox('Select your option:', options)
-    choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
-    start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
+    choice2 = st.selectbox('Individual Player or Everyone:', ['Individual', 'Everyone'])
+    start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years),
+                                     value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
-    start_runs,end_runs = st.slider('Select Minimum Wickets:', min_value=0, max_value=300, value=(0, 300))
-    start_runs1,end_runs1 = st.slider('Select Minimum Balls Bowled:', min_value=1, max_value=5000, value=(1, 5000))
+    start_runs, end_runs = st.slider('Select Minimum Wickets:', min_value=0, max_value=300, value=(0, 300))
+    start_runs1, end_runs1 = st.slider('Select Minimum Balls Bowled:', min_value=1, max_value=5000, value=(1, 5000))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
-    inns = [1,2]
+    inns = [1, 2]
 
     if choice2 == 'Individual':
         players = data['bowler'].unique()
@@ -264,16 +265,16 @@ def main():
         combined_data = pd.concat(all_data, ignore_index=True)
         most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
 
-        truevalues = combined_data.groupby('Player')[['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
-
+        truevalues = combined_data.groupby('Player')[
+            ['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
 
         final_results = truemetrics(truevalues)
 
         final_results2 = pd.merge(most_frequent_team, final_results, on='Player', how='left')
 
-
-        final_results4 = final_results2.sort_values(by=['Wicket'],ascending=False)
-        final_results4 = final_results4[(final_results4['Wicket'] >= start_runs) & (final_results4['Wicket'] <= end_runs)]
+        final_results4 = final_results2.sort_values(by=['Wicket'], ascending=False)
+        final_results4 = final_results4[
+            (final_results4['Wicket'] >= start_runs) & (final_results4['Wicket'] <= end_runs)]
         final_results4 = final_results4[(final_results4['B'] >= start_runs1) & (final_results4['B'] <= end_runs1)]
         if choice == 'Overall Stats':
             # Display the results
@@ -297,10 +298,10 @@ def main():
                     st.subheader(f'{i} not in this list')
             combined_data = combined_data[combined_data['Player'].isin(temp)]
             combined_data = combined_data.sort_values(by=['Wicket'], ascending=False)
-            combined_data = combined_data[(combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
+            combined_data = combined_data[
+                (combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
             combined_data = combined_data[(combined_data['B'] >= start_runs1) & (combined_data['B'] <= end_runs1)]
             st.dataframe(combined_data)
-
 
 
 # Run the main function
