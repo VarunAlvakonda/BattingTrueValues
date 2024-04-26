@@ -264,9 +264,7 @@ def main():
                 final_results4 = final_results4[final_results4['Player'].isin(temp)]
             final_results4 = final_results4.sort_values(by=['Wicket'], ascending=False)
             st.dataframe(final_results4.round(2))
-            fig, ax = plt.subplots()
-            ax.scatter(final_results4['True SR'], final_results4['True Ave'])
-            st.pyplot(fig)
+            
         elif choice == 'Season By Season':
             temp = []
             for i in player:
@@ -280,9 +278,6 @@ def main():
             combined_data = combined_data[(combined_data['B'] >= start_runs1) & (combined_data['B'] <= end_runs1)]
             st.dataframe(combined_data)
 
-            fig, ax = plt.subplots()
-            ax.scatter(final_results4['True SR'], final_results4['True Ave'])
-            st.pyplot(fig)
 
 
 # Run the main function
