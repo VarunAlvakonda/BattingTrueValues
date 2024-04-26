@@ -166,39 +166,6 @@ def analyze_data_for_year(year, data):
 @st.cache_data
 def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
-    return data
-
-# The main app function
-
-def main():
-    st.title('Bowling True Values')
-
-    league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)', 'T20 WCs', 'CPL','LPL'])
-    # dic = {'IPL':'all_matches.csv','PSL':'PSL.csv','SA20':'SA20.csv','T20I (test playing nations only)':'testplayingnations.csv', 'T20 WCs':'t20wcs.csv', 'CPL':'CPL.csv','LPL':'LPL.csv'}
-    #
-    # leagues = []
-    # for l in league:
-    #     d = pd.read_csv(dic[l], low_memory=False)
-    #     d['League'] = l
-    #     leagues.append(d)
-
-    # data =pd.concat(leagues, ignore_index=True)
-    # Load your data
-    if league == 'IPL':
-        data =  load_data('all_matches.csv')
-    elif league == 'PSL':
-        data =  load_data('PSL.csv')
-    elif league == 'SA20':
-        data =  load_data('SA20.csv')
-    elif league == 'T20I (test playing nations only)':
-        data =  load_data('testplayingnations.csv')
-    elif league == 'T20 WCs':
-        data =  load_data('t20wcs.csv')
-    elif league == 'CPL':
-        data =  load_data('CPL.csv')
-    elif league == 'LPL':
-        data =  load_data('LPL.csv')
-
     data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
@@ -222,6 +189,37 @@ def main():
     data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
 
+    return data
+
+# The main app function
+
+def main():
+    st.title('Bowling True Values')
+
+    league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)', 'T20 WCs', 'CPL','LPL'])
+
+    # Load and concatenate data for all selected leagues
+    league_files = {
+        'IPL': 'all_matches.csv',
+        'PSL': 'PSL.csv',
+        'SA20': 'SA20.csv',
+        'T20I (test playing nations only)': 'testplayingnations.csv',
+        'T20 WCs': 't20wcs.csv',
+        'CPL': 'CPL.csv',
+        'LPL': 'LPL.csv'
+    }
+
+    selected_leagues = st.multiselect('Choose leagues:', list(league_files.keys()))
+
+    all_league_data = []
+    for league in selected_leagues:
+        league_data = load_data(league_files[league])
+        league_data['League'] = league
+        all_league_data.append(league_data)
+
+    data = pd.concat(all_league_data, ignore_index=True)
+
+    years = data['year'].unique()
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
     # Create a select box
@@ -229,10 +227,8 @@ def main():
     choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
-    start_runs,end_runs = st.slider('Select Minimum Wickets:', min_value=0, max_value=300, value=(0, 300))
+    start_runs,end_runs = st.slider('Select Minimum Wickets:', min_value=0, max_value=1000, value=(0, 1000))
     start_runs1,end_runs1 = st.slider('Select Minimum Balls Bowled:', min_value=1, max_value=5000, value=(1, 5000))
-    filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
-    filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     inns = [1,2]
 
     if choice2 == 'Individual':
@@ -241,20 +237,26 @@ def main():
         # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
 
     inn = st.multiselect("Select innings:", inns)
-    if inn:
-        filtered_data2 = filtered_data2[filtered_data2['innings'].isin(inn)].copy()
-    x = filtered_data2
+    x = data
     # A button to trigger the analysis
     if st.button('Analyse'):
         # Call a hypothetical function to analyze data
         all_data = []
+        results_by_league = {}
+        for league in selected_leagues:
+            league_data = data[data['League'] == league]
+            league_data = league_data[(league_data['over'] >= start_over) & (league_data['over'] <= end_over)]
+            league_data = league_data[(league_data['year'] >= start_year) & (league_data['year'] <= end_year)]
+            # Analyze data and save results for each year
+            years2 = league_data['year'].unique()
+            for year in years2:
+                results = analyze_data_for_year(year, league_data)
+                all_data.append(results)
 
-        # Analyze data and save results for each year
-        for year in filtered_data2['year'].unique():
-            results = analyze_data_for_year(year, filtered_data2)
-            all_data.append(results)
+            league_data2 = pd.concat(all_data, ignore_index=True)
+            results_by_league[league] = analyze_data_for_year(league_data2)
 
-        combined_data = pd.concat(all_data, ignore_index=True)
+        combined_data = pd.concat(results_by_league.values(), ignore_index=True)
         most_frequent_team = combined_data.groupby('Player')['Team'].agg(lambda x: x.mode().iat[0]).reset_index()
 
         truevalues = combined_data.groupby('Player')[['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
