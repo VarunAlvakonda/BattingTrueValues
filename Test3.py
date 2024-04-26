@@ -260,52 +260,55 @@ all_data2 = []
 all_data3 = []
 
 # Load the data
+# Load the data
 @st.cache_data
 def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
-    return data
-
-# The main app function
-def main():
-    st.title('Batting True Values')
-
-    league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)', 'T20 WCs', 'CPL','LPL'])
-    if league == 'IPL':
-        data =  load_data('all_matches.csv')
-    elif league == 'PSL':
-        data =  load_data('PSL.csv')
-    elif league == 'SA20':
-        data =  load_data('SA20.csv')
-    elif league == 'T20I (test playing nations only)':
-        data =  load_data('testplayingnations.csv')
-    elif league == 'T20 WCs':
-        data =  load_data('t20wcs.csv')
-    elif league == 'CPL':
-        data =  load_data('CPL.csv')
-    elif league == 'LPL':
-        data =  load_data('LPL.csv')
     data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
     # Assuming 'wides' column exists and is non-zero for wide balls
     data.loc[data['wides'] > 0, 'B'] = 0
-    
+
     data['wides'].fillna(0, inplace=True)
     data['noballs'].fillna(0, inplace=True)
-    
+
     data['RC'] = data['wides'] + data['noballs'] + data['runs_off_bat']
-    
+
     # Extract the year from the 'start_date' column
-    
+
     data['year'] = pd.to_datetime(data['start_date'], format='mixed').dt.year
     years = data['year'].unique()
 
     # Remove any potential duplicate rows
     data = data.drop_duplicates()
 
-    
     data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
+
+    return data
+
+
+# The main app function
+
+def main():
+    st.title('Bowling True Values')
+
+    # Load and concatenate data for all selected leagues
+    league_files = {
+        'IPL': 'all_matches.csv',
+        'PSL': 'PSL.csv',
+        'SA20': 'SA20.csv',
+        'T20I (test playing nations only)': 'testplayingnations.csv',
+        'T20 WCs': 't20wcs.csv',
+        'CPL': 'CPL.csv',
+        'LPL': 'LPL.csv'
+    }
+
+    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
+
+    data = load_data(league_files[selected_leagues])
+    years = data['year'].unique()
     
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
