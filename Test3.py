@@ -198,8 +198,8 @@ def analyze_data_for_year3(year2, data2):
     return final_results4.round(2)
 
 def analyze_data_for_year4(year2, data2):
-    # combineddata2 = data2[data2['innings'] < 3].copy()
-    combineddata = data2[data2['year'] == year2].copy()
+    combineddata2 = data2[data2['innings'] < 3].copy()
+    combineddata = combineddata2[combineddata2['year'] == year2].copy()
     inns = combineddata.groupby(['striker', 'match_id','phase'])[['runs_off_bat']].sum().reset_index()
     inns['I'] = 1
     inns2 = inns.groupby(['striker','phase'])[['I']].sum().reset_index()
