@@ -2,7 +2,6 @@ import math
 
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
 
 # Extract the year from the 'start_date' column
 
@@ -264,7 +263,7 @@ def main():
                 final_results4 = final_results4[final_results4['Player'].isin(temp)]
             final_results4 = final_results4.sort_values(by=['Wicket'], ascending=False)
             st.dataframe(final_results4.round(2))
-            
+
         elif choice == 'Season By Season':
             temp = []
             for i in player:
