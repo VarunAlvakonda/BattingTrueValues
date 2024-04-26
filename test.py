@@ -259,6 +259,7 @@ def main():
 
         truevalues = combined_data.groupby('Player')[['B', 'Runs Conceded', 'Wicket', 'Expected Runs Conceded', 'Expected Wickets']].sum()
 
+
         final_results = truemetrics(truevalues)
 
         final_results2 = pd.merge(most_frequent_team, final_results, on='Player', how='left')
