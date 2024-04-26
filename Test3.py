@@ -310,8 +310,8 @@ def main():
     data = load_data(league_files[selected_leagues])
     years = data['year'].unique()
     data2 = data.groupby('striker')[['runs_off_bat', 'B']].sum().reset_index()
-    run = min(data2['runs_off_bat']).astype(int)
-    ball = min(data2['B']).astype(int)
+    run = min((data2['runs_off_bat']).astype(int))
+    ball = min((data2['B']).astype(int))
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
     # Create a select box
