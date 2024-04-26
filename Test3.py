@@ -272,13 +272,13 @@ def main():
     league = st.selectbox('Choose an option:', ['IPL','PSL','SA20','T20I (test playing nations only)'])
     # Load your data
     if league == 'IPL':
-        data =  load_data('all_matches.csv', low_memory=False)
+        data =  load_data('all_matches.csv')
     elif league == 'PSL':
-        data =  load_data('PSL.csv', low_memory=False)
+        data =  load_data('PSL.csv')
     elif league == 'SA20':
-        data =  load_data('SA20.csv', low_memory=False)
+        data =  load_data('SA20.csv')
     elif league == 'T20I (test playing nations only)':
-        data =  load_data('testplayingnations.csv', low_memory=False)
+        data =  load_data('testplayingnations.csv')
     data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
