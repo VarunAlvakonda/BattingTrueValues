@@ -374,8 +374,6 @@ def main():
                         st.subheader(f'{i} not in this list')
                 final_results4 = final_results4[final_results4['Player'].isin(temp)]
                 st.dataframe(final_results4.round(2))
-                fig = px.scatter(final_results4.round(2), x='True SR', y='True Ave', size='Runs Scored',text='Year',size_max=30, hover_data=['Player','Runs Scored','BF','Ave','SR'])
-                st.plotly_chart(fig, use_container_width=True)
             else:
                 final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
                 st.dataframe(final_results4.round(2))
@@ -395,8 +393,6 @@ def main():
                 combined_data = combined_data[combined_data['Player'].isin(temp)]
                 combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
                 st.dataframe(combined_data)
-                fig = px.scatter(combined_data.round(2), x='True SR', y='True Ave', size='Runs Scored',text='Year',size_max=30, hover_data=['Player','Runs Scored','BF','Ave','SR'])
-                st.plotly_chart(fig, use_container_width=True)
             else:
                 combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
                 st.dataframe(combined_data)
