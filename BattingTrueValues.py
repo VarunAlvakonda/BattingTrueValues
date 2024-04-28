@@ -231,6 +231,8 @@ def main():
         players = data['Batter'].unique()
         player = st.multiselect("Select Players:", players)
         # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
+    cats = st.multiselect('Choose Specifics: ', filtered_data2[cat].unique())
+    filtered_data2 = filtered_data2[filtered_data2[cat].isin(cats)]
     x = filtered_data2
     # A button to trigger the analysis
     if st.button('Analyse'):
