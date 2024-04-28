@@ -211,7 +211,7 @@ def main():
     data.loc[data['BowlType'].isin(loff), 'Types'] = 'Left Arm Finger Spin'
     data.loc[data['BowlType'].isin(rleg), 'Types'] = 'Right Arm Wrist Spin'
     data.loc[data['BowlType'].isin(lleg), 'Types'] = 'Left Arm Wrist Spin'
-    data = data.rename(columns={'F':'Pace','S':'Spin'})
+    data['BowlCat'] = data['BowlCat'].replace({'F': 'Pace', 'S': 'Spin'})
 
     types = ['Right Arm Pace', 'Left Arm Pace', 'Right Arm Finger Spin', 'Left Arm Finger Spin', 'Right Arm Wrist Spin',
              'Left Arm Wrist Spin', ]
