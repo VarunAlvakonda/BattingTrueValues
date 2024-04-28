@@ -253,14 +253,14 @@ def main():
 
         final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
         if choice == 'Overall Stats':
-            # Display the results
-            temp = []
-            for i in player:
-                if i in final_results['Player'].unique():
-                    temp.append(i)
-                else:
-                    st.subheader(f'{i} not in this list')
-            final_results = final_results[final_results['Player'].isin(temp)]
+            if choice2 == 'Individual':
+                temp = []
+                for i in player:
+                    if i in final_results['Player'].unique():
+                        temp.append(i)
+                    else:
+                        st.subheader(f'{i} not in this list')
+                final_results = final_results[final_results['Player'].isin(temp)]
 
             final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results.round(2))
