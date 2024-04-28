@@ -34,39 +34,39 @@ def truemetrics2(truevalues):
 def calculate_entry_point_all_years(data):
     # Identifying the first instance each batter faces a delivery in each match
     print(data.columns)
-    first_appearance = data.drop_duplicates(subset=['MatchNum', 'MatchInn', 'Batter', 'Types', ])
+    first_appearance = data.drop_duplicates(subset=['MatchNum', 'MatchInn', 'Batter', 'BowlCat', ])
     first_appearance = first_appearance.copy()
 
     # Converting overs and deliveries into a total delivery count
     first_appearance.loc[:, 'total_deliveries'] = first_appearance['Over'].apply(
         lambda x: int(x) * 6 + int((x - int(x)) * 10))
     # Calculating the average entry point for each batter in total deliveries
-    avg_entry_point_deliveries = first_appearance.groupby(['Batter', 'Types', ])[
+    avg_entry_point_deliveries = first_appearance.groupby(['Batter', 'BowlCat', ])[
         'total_deliveries'].median().reset_index()
 
     # Converting the average entry point from total deliveries to overs and Overs and rounding to 1 decimal place
     avg_entry_point_deliveries['average_over'] = avg_entry_point_deliveries['total_deliveries'].apply(
         lambda x: round((x // 6) + (x % 6) / 10, 1))
 
-    return avg_entry_point_deliveries[['Batter', 'Types', 'average_over']], first_appearance
+    return avg_entry_point_deliveries[['Batter', 'BowlCat', 'average_over']], first_appearance
 
 
 def calculate_first_appearance(data):
     # Identifying the first instance each batter faces a delivery in each match
-    first_appearance = data.drop_duplicates(subset=['MatchNum', 'MatchInn', 'Batter', 'Types', ])
+    first_appearance = data.drop_duplicates(subset=['MatchNum', 'MatchInn', 'Batter', 'BowlCat', ])
     # Converting overs and deliveries into a total delivery count
     first_appearance.loc[:, 'total_deliveries'] = first_appearance['Over'].apply(
         lambda x: int(x) * 6 + int((x - int(x)) * 10))
 
     # Calculating the average entry point for each batter in total deliveries
-    avg_entry_point_deliveries = first_appearance.groupby(['Batter', 'year', 'Types', ])[
+    avg_entry_point_deliveries = first_appearance.groupby(['Batter', 'year', 'BowlCat', ])[
         'total_deliveries'].median().reset_index()
 
     # Converting the average entry point from total deliveries to overs and Overs
     avg_entry_point_deliveries['average_over'] = (
         avg_entry_point_deliveries['total_deliveries'].apply(lambda x: (x // 6) + (x % 6) / 10)).round(1)
 
-    return avg_entry_point_deliveries[['Batter', 'Types', 'average_over']]
+    return avg_entry_point_deliveries[['Batter', 'BowlCat', 'average_over']]
 
 
 def analyze_data_for_year2(data):
@@ -81,7 +81,7 @@ def analyze_data_for_year2(data):
     # Assuming other analysis results are in a DataFrame named 'analysis_results'
     if 'analysis_results' in locals() or 'analysis_results' in globals():
         # Merge the average entry point data with other analysis results
-        analysis_results = pd.merge(year_data, first_appearance_data, on=['Batter', 'Types', ],
+        analysis_results = pd.merge(year_data, first_appearance_data, on=['Batter', 'BowlCat', ],
                                     how='left')
     else:
         # Use average entry point data as the primary analysis result
@@ -93,14 +93,14 @@ def analyze_data_for_year2(data):
 def analyze_data_for_year3(year2, data2):
     combineddata2 = data2[data2['MatchInn'] < 3].copy()
     combineddata = combineddata2[combineddata2['year'] == year2].copy()
-    inns = combineddata.groupby(['Batter', 'MatchNum', 'Types'])[['Runs']].sum().reset_index()
+    inns = combineddata.groupby(['Batter', 'MatchNum', 'BowlCat'])[['Runs']].sum().reset_index()
     inns['I'] = 1
-    inns2 = inns.groupby(['Batter', 'Types'])[['I']].sum().reset_index()
-    inns2.columns = ['Player', 'Types', 'I']
+    inns2 = inns.groupby(['Batter', 'BowlCat'])[['I']].sum().reset_index()
+    inns2.columns = ['Player', 'BowlCat', 'I']
     inns3 = inns.copy()
-    inns['CI'] = inns.groupby(['Batter', 'Types'], as_index=False)[['I']].cumsum()
+    inns['CI'] = inns.groupby(['Batter', 'BowlCat'], as_index=False)[['I']].cumsum()
     analysis_results = analyze_data_for_year2(combineddata)
-    analysis_results.columns = ['Player', 'Types', 'Median Entry Point']
+    analysis_results.columns = ['Player', 'BowlCat', 'Median Entry Point']
 
     valid = ['X', 'WX']
     # Filter out rows where a player was dismissed
@@ -113,27 +113,27 @@ def analyze_data_for_year3(year2, data2):
     combineddata2['Out'].fillna(0, inplace=True)
     combineddata = combineddata2.copy()
 
-    player_outs = dismissed_data.groupby(['Batter', 'Venue', 'over', 'Types'])[['Out']].sum().reset_index()
-    player_outs.columns = ['Player', 'Venue', 'Over', 'Types', 'Out']
+    player_outs = dismissed_data.groupby(['Batter', 'Venue', 'over', 'BowlCat'])[['Out']].sum().reset_index()
+    player_outs.columns = ['Player', 'Venue', 'Over', 'BowlCat', 'Out']
 
-    over_outs = dismissed_data.groupby(['Venue', 'over', 'Types'])[['Out']].sum().reset_index()
-    over_outs.columns = ['Venue', 'Over', 'Types', 'Outs']
+    over_outs = dismissed_data.groupby(['Venue', 'over', 'BowlCat'])[['Out']].sum().reset_index()
+    over_outs.columns = ['Venue', 'Over', 'BowlCat', 'Outs']
 
     # Group by player and aggregate the runs scored
-    player_runs = combineddata.groupby(['Batter', 'Venue', 'over', 'Types'])[['Runs', 'B']].sum().reset_index()
+    player_runs = combineddata.groupby(['Batter', 'Venue', 'over', 'BowlCat'])[['Runs', 'B']].sum().reset_index()
     # Rename the columns for clarity
-    player_runs.columns = ['Player', 'Venue', 'Over', 'Types', 'Runs Scored', 'BF']
+    player_runs.columns = ['Player', 'Venue', 'Over', 'BowlCat', 'Runs Scored', 'BF']
 
     # Display the merged DataFrame
-    over_runs = combineddata.groupby(['Venue', 'over', 'Types'])[['Runs', 'B']].sum().reset_index()
-    over_runs.columns = ['Venue', 'Over', 'Types', 'Runs', 'B']
+    over_runs = combineddata.groupby(['Venue', 'over', 'BowlCat'])[['Runs', 'B']].sum().reset_index()
+    over_runs.columns = ['Venue', 'Over', 'BowlCat', 'Runs', 'B']
     # Merge the two DataFrames on the 'Player' column
 
-    combined_df = pd.merge(player_runs, player_outs, on=['Player', 'Venue', 'Over', 'Types'], how='left')
+    combined_df = pd.merge(player_runs, player_outs, on=['Player', 'Venue', 'Over', 'BowlCat'], how='left')
     # Merge the two DataFrames on the 'Player' column
-    combined_df2 = pd.merge(over_runs, over_outs, on=['Venue', 'Over', 'Types'], how='left')
+    combined_df2 = pd.merge(over_runs, over_outs, on=['Venue', 'Over', 'BowlCat'], how='left')
 
-    combined_df3 = pd.merge(combined_df, combined_df2, on=['Venue', 'Over', 'Types'], how='left')
+    combined_df3 = pd.merge(combined_df, combined_df2, on=['Venue', 'Over', 'BowlCat'], how='left')
     combined_df3['Outs'].fillna(0, inplace=True)
     combined_df3['Out'].fillna(0, inplace=True)
 
@@ -147,16 +147,16 @@ def analyze_data_for_year3(year2, data2):
     combined_df3['Expected Runs'] = combined_df3['BF'] * combined_df3['BSR']
     combined_df3['Expected Outs'] = combined_df3['BF'] * combined_df3['OPB']
 
-    truevalues = combined_df3.groupby(['Player', 'Types'])[
+    truevalues = combined_df3.groupby(['Player', 'BowlCat'])[
         ['Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum()
 
     final_results = truemetrics(truevalues)
 
-    players_years = combineddata[['Batter', 'year', 'Types']].drop_duplicates()
-    players_years.columns = ['Player', 'Year', 'Types']
-    final_results2 = pd.merge(inns2, final_results, on=['Player', 'Types'], how='left')
-    final_results3 = pd.merge(players_years, final_results2, on=['Player', 'Types'], how='left')
-    final_results4 = pd.merge(final_results3, analysis_results, on=['Player', 'Types'], how='left')
+    players_years = combineddata[['Batter', 'year', 'BowlCat']].drop_duplicates()
+    players_years.columns = ['Player', 'Year', 'BowlCat']
+    final_results2 = pd.merge(inns2, final_results, on=['Player', 'BowlCat'], how='left')
+    final_results3 = pd.merge(players_years, final_results2, on=['Player', 'BowlCat'], how='left')
+    final_results4 = pd.merge(final_results3, analysis_results, on=['Player', 'BowlCat'], how='left')
     truevalues = truemetrics2(combined_df3)
     return final_results4.round(2)
 
@@ -241,7 +241,7 @@ def main():
 
         combined_data = pd.concat(all_data, ignore_index=True)
 
-        truevalues = combined_data.groupby(['Player', 'Types'])[
+        truevalues = combined_data.groupby(['Player', 'BowlCat'])[
             ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum().reset_index()
         final_results = truemetrics(truevalues)
 
