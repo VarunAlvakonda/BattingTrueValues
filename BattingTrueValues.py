@@ -172,7 +172,14 @@ def load_data(filename):
 def main():
     st.title('Batting True Values by Bowling Type')
 
-    data = pd.read_csv('IPLData5.csv', low_memory=False)
+    league_files = {
+        'IPL': 'IPLData5.csv',
+        'T20I': 'T20Data.csv',
+    }
+
+    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
+    data = load_data(league_files[selected_leagues])
+
     # Set 'B' to 0 for deliveries that are wides
     data['B'] = 1
 
