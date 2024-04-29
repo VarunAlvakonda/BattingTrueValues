@@ -317,6 +317,8 @@ def load_data(filename):
     data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
 
+    data['date'] = pd.to_datetime(data['start_date'])  # replace with your actual date column name
+
     return data
 
 
@@ -354,12 +356,23 @@ def main():
     choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
     pos = list(range(1, 12))
     # selected_options = st.multiselect('Choose options:', pos)
-    start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
+    # start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
+    min_date = data['date'].min()
+    max_date = data['date'].max()
+    start_date = st.date_input("Start date", min_date)
+    end_date = st.date_input("End date", max_date)
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=run, value=(1, run))
     start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=ball, value=(1, ball))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
-    filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
+    if start_date <= end_date:
+        # Filter data based on the date range
+        filtered_data2 = filtered_data[(filtered_data['date'] >= start_date) & (filtered_data['date'] <= end_date)]
+        st.write(f"Showing results for: {start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}")
+        # Display or process filtered_data as needed
+    else:
+        st.error('Start date must be before end date.')
+
     if choice2 == 'Individual':
         players = data['striker'].unique()
         player = st.multiselect("Select Players:", players)
