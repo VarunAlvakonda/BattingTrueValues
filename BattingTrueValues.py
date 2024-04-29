@@ -177,7 +177,7 @@ def main():
         'IPL': 'IPLData5.csv',
     }
 
-    data = load_data('IPLData5.csv')
+    data = pd.read_csv('IPLData5.csv', low_memory=False)
 
     # Set 'B' to 0 for deliveries that are wides
     data['B'] = 1
