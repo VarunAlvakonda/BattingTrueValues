@@ -320,7 +320,8 @@ def load_data(filename):
     data['over'] = data['ball2'] // 1 + 1
 
     data['date'] = pd.to_datetime(data['start_date'], errors='coerce')  # replace with your actual date column name
-
+    # Remove rows with NaT in 'date' column
+    data.dropna(subset=['date'], inplace=True)
     return data
 
 
