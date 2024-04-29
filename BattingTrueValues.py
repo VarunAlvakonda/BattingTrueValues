@@ -169,6 +169,7 @@ def load_data(filename):
 
 
 # The main app function
+
 def main():
     st.title('Batting True Values by Bowling Type')
 
