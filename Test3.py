@@ -307,9 +307,13 @@ def main():
         'LPL': 'LPL.csv'
     }
 
-    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
+    selected_leagues = st.multiselect('Choose leagues:', list(league_files.keys()))
+    com = []
+    for league in selected_leagues:
+        d = load_data(league_files[selected_leagues])
+        com.append(d)
+    data = pd.concat(com, ignore_index=True)
 
-    data = load_data(league_files[selected_leagues])
     years = data['year'].unique()
     data2 = data.groupby('striker')[['runs_off_bat', 'B']].sum().reset_index()
     run = max((data2['runs_off_bat']).astype(int))
