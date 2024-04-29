@@ -9,9 +9,8 @@ import streamlit as st
 def truemetrics(truevalues):
     truevalues['ER'] = truevalues['Runs Conceded'] / (truevalues['B'] / 6)
     truevalues['Expected ER'] = truevalues['Expected Runs Conceded'] / (truevalues['B'] / 6)
-    truevalues['True ER'] = (
-                truevalues['Expected Runs Conceded'] / (truevalues['B'] / 6) - truevalues['Runs Conceded'] / (
-                    truevalues['B'] / 6))
+    truevalues['True ER'] = (truevalues['Expected Runs Conceded'] / (truevalues['B'] / 6) - truevalues['Runs Conceded'] / (truevalues['B'] / 6))
+    truevalues['True ER/ 4 overs'] = truevalues['True ER'] * 4
     truevalues['True Wickets'] = (truevalues['Wicket'] - truevalues['Expected Wickets'])
     truevalues['True W/ 4 overs'] = truevalues['True Wickets'] / (truevalues['B'] / 24)
     return truevalues
