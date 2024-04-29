@@ -175,9 +175,12 @@ def main():
 
     league_files = {
         'IPL': 'IPLData5.csv',
+        'T20I': 'T20Data.csv',
     }
 
-    data = pd.read_csv('IPLData5.csv', low_memory=False)
+    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
+
+    data = load_data(league_files[selected_leagues])
 
     # Set 'B' to 0 for deliveries that are wides
     data['B'] = 1
@@ -239,7 +242,8 @@ def main():
         player = st.multiselect("Select Players:", players)
         # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
     cats = st.multiselect('Choose Specifics: ', filtered_data2[cat].unique())
-    filtered_data2 = filtered_data2[filtered_data2[cat].isin(cats)]
+    if cats:
+        filtered_data2 = filtered_data2[filtered_data2[cat].isin(cats)]
     x = filtered_data2
     # A button to trigger the analysis
     if st.button('Analyse'):
