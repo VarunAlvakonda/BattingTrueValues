@@ -15,6 +15,10 @@ def truemetrics(truevalues):
     truevalues['True Ave'] = (truevalues['Ave'] - truevalues['Expected Ave'])
     truevalues['True SR'] = (truevalues['SR'] - truevalues['Expected SR'])
 
+    # Calculate 'True Ave' and 'True SR' for the final results
+    truevalues['True Ave Ratio'] = (truevalues['Ave']/truevalues['Expected Ave'])
+    truevalues['True SR Ratio'] = (truevalues['SR']/truevalues['Expected SR'])
+
     truevalues['Out Ratio'] = (truevalues['Expected Outs'] / truevalues['Out'])
 
     return truevalues
