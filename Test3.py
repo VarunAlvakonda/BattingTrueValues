@@ -307,7 +307,7 @@ def main():
         'LPL': 'LPL.csv'
     }
 
-    selected_leagues = st.multiselect('Choose leagues:', list(league_files.keys()))
+    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
 
     data = load_data(league_files[selected_leagues])
     years = data['year'].unique()
