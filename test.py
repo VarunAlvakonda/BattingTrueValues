@@ -209,7 +209,7 @@ def main():
         'CPL': 'CPL.csv',
         'LPL': 'LPL.csv',
         'MLC': 'MLC.csv',
-        'SMA': 'SMA.csv',
+        'SMAT': 'SMA.csv',
         'The 100': 'The 100.csv',
     }
 
