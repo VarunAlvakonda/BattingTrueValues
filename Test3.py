@@ -358,8 +358,8 @@ def main():
     start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=ball, value=(1, ball))
     pos = list(range(1, 12))
     startpos = st.multiselect('Batting Positions: ', pos)
-    data = data[data['batting_position'].isin(startpos)].copy()
-    filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
+    data2 = data[data['batting_position'].isin(startpos)].copy()
+    filtered_data = data2[(data2['over'] >= start_over) & (data2['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
         players = data['striker'].unique()
