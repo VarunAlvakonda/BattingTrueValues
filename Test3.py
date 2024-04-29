@@ -319,7 +319,7 @@ def load_data(filename):
     data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
 
-    data['date'] = pd.to_datetime(data['start_date'])  # replace with your actual date column name
+    data['date'] = pd.to_datetime(data['start_date'], errors='coerce')  # replace with your actual date column name
 
     return data
 
