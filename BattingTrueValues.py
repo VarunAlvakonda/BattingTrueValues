@@ -178,6 +178,7 @@ def main():
     }
 
     selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
+
     data = load_data(league_files[selected_leagues])
 
     # Set 'B' to 0 for deliveries that are wides
