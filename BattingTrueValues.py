@@ -271,6 +271,7 @@ def main():
                         st.subheader(f'{i} not in this list')
                 final_results = final_results[final_results['Player'].isin(temp)]
 
+
             final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
             st.dataframe(final_results.round(2))
         elif choice == 'Season By Season':
