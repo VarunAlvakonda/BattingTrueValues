@@ -177,9 +177,7 @@ def main():
         'IPL': 'IPLData5.csv',
     }
 
-    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
-
-    data = load_data(league_files[selected_leagues])
+    data = load_data('IPLData5.csv')
 
     # Set 'B' to 0 for deliveries that are wides
     data['B'] = 1
