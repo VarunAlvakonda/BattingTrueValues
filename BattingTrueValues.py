@@ -175,7 +175,6 @@ def main():
 
     league_files = {
         'IPL': 'IPLData5.csv',
-        'T20I': 'T20Data.csv',
     }
 
     selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
