@@ -291,8 +291,6 @@ def battingpositions(combineddata):
 def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
 
-    combined_data2 = battingpositions(data)
-    data = combined_data2.copy()
     data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
@@ -350,16 +348,13 @@ def main():
     # Create a select box
     choice = st.selectbox('Select your option:', options)
     choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
-
+    pos = list(range(1, 12))
     # selected_options = st.multiselect('Choose options:', pos)
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=run, value=(1, run))
     start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=ball, value=(1, ball))
-    pos = list(range(1, 12))
-    startpos = st.multiselect('Batting Positions: ', pos)
-    data2 = data[data['batting_position'].isin(startpos)].copy()
-    filtered_data = data2[(data2['over'] >= start_over) & (data2['over'] <= end_over)]
+    filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
         players = data['striker'].unique()
