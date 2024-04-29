@@ -312,7 +312,7 @@ def main():
     if selected_leagues:
         com = []
         for league in selected_leagues:
-            d = load_data(league_files[selected_leagues])
+            d = load_data(league_files[league])
             com.append(d)
         data = pd.concat(com, ignore_index=True)
 
