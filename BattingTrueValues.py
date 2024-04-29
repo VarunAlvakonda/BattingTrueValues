@@ -286,6 +286,7 @@ def main():
             st.dataframe(combined_data)
 
 
+
 # Run the main function
 if __name__ == '__main__':
     main()
