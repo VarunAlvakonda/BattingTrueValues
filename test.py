@@ -216,21 +216,6 @@ def main():
 
     data = load_data(league_files[selected_leagues])
     years = data['year'].unique()
-    # Load your data
-    # if league == 'IPL':
-    #     data =  load_data('all_matches.csv')
-    # elif league == 'PSL':
-    #     data =  load_data('PSL.csv')
-    # elif league == 'SA20':
-    #     data =  load_data('SA20.csv')
-    # elif league == 'T20I (test playing nations only)':
-    #     data =  load_data('testplayingnations.csv')
-    # elif league == 'T20 WCs':
-    #     data =  load_data('t20wcs.csv')
-    # elif league == 'CPL':
-    #     data =  load_data('CPL.csv')
-    # elif league == 'LPL':
-    #     data =  load_data('LPL.csv')
 
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']

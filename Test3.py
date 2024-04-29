@@ -257,15 +257,42 @@ def analyze_data_for_year4(year2, data2):
     final_results3 = pd.merge(players_years, final_results2, on=['Player','phase'], how='left')
     return final_results3.round(2)
 
-all_data = []
-all_data2 = []
-all_data3 = []
 
-# Load the data
+def battingpositions(combineddata):
+    # Initialize a column for the batting position in the original DataFrame
+    grouped_data = combineddata.groupby(['match_id', 'batting_team'])
+    combineddata['batting_position'] = 0
+
+    # Iterate over each group (unique match_id and batting_team)
+    for (match_id, team), group in grouped_data:
+        # Initialize a dictionary to track positions
+        position_counter = {}
+        # Get the first row of the group to identify initial striker and non-striker
+        first_row = group.iloc[0]
+        initial_striker = first_row['striker']
+        initial_non_striker = first_row['non_striker']
+
+        # Assign position 1 to the initial striker and 2 to the initial non-striker
+        position_counter[initial_striker] = 1
+        position_counter[initial_non_striker] = 2
+
+        # Iterate through each row of the group to assign positions
+        for index, row in group.iterrows():
+            striker = row['striker']
+            if striker not in position_counter:
+                # Assign the next position number to new strikers
+                position_counter[striker] = len(position_counter) + 1
+            # Update the DataFrame with the batting position
+            combineddata.at[index, 'batting_position'] = position_counter[striker]
+    return combineddata
+
 # Load the data
 @st.cache_data
 def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
+
+    combined_data2 = battingpositions(data)
+    data = combined_data2.copy()
     data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
@@ -323,12 +350,15 @@ def main():
     # Create a select box
     choice = st.selectbox('Select your option:', options)
     choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
-    pos = list(range(1, 12))
+
     # selected_options = st.multiselect('Choose options:', pos)
     start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=run, value=(1, run))
     start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=ball, value=(1, ball))
+    pos = list(range(1, 12))
+    startpos = st.multiselect('Batting Positions: ', pos)
+    data = data[data['batting_position'].isin(startpos)].copy()
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if choice2 == 'Individual':
