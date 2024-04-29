@@ -303,6 +303,8 @@ def main():
         'SA20': 'SA20.csv',
         'T20I (test playing nations only)': 'testplayingnations.csv',
         'T20 WCs': 't20wcs.csv',
+        'WPL': 'WPL.csv',
+        'WT20Is': 'WT20Is.csv',
         'CPL': 'CPL.csv',
         'LPL': 'LPL.csv'
     }
