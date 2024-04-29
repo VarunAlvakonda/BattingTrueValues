@@ -276,6 +276,7 @@ def main():
         elif choice == 'Season By Season':
             if choice2 == 'Individual':
                 temp = []
+
                 for i in player:
                     if i in combined_data['Player'].unique():
                         temp.append(i)
