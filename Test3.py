@@ -329,7 +329,7 @@ def main():
 
             final_results4 = pd.merge(final_results3, final_results, on='Player', how='left').reset_index()
             final_results4 = final_results4.sort_values(by=['Runs Scored'], ascending=False)
-            final_results4 = final_results4[['Player', 'Median Entry Point','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR','Team',]]
+            final_results4 = final_results4[['Player', 'Median Entry Point','I', 'Runs Scored', 'BF', 'Out','Ave','SR','Expected Ave','Expected SR','True Ave','True SR']]
             final_results4 = final_results4[(final_results4['Runs Scored'] >= start_runs) & (final_results4['Runs Scored'] <= end_runs)]
             final_results4 = final_results4[(final_results4['BF'] >= start_runs1) & (final_results4['BF'] <= end_runs1)]
             if choice == 'Overall Stats':
