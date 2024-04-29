@@ -304,9 +304,11 @@ def main():
         'T20I (test playing nations only)': 'testplayingnations.csv',
         'T20 WCs': 't20wcs.csv',
         'WPL': 'WPL.csv',
-        'WT20Is': 'WT20Is.csv',
         'CPL': 'CPL.csv',
-        'LPL': 'LPL.csv'
+        'LPL': 'LPL.csv',
+        'MLC': 'MLC.csv',
+        'SMA': 'SMA.csv',
+        'The 100': 'The 100.csv',
     }
 
     selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
