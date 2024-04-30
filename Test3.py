@@ -326,7 +326,7 @@ def main():
         'IPL': 'all_matches.csv',
         'PSL': 'PSL.csv',
         'SA20': 'SA20.csv',
-        'T20I (test playing nations only)': 'testplayingnations.csv',
+        'T20I': 'T20I.csv',
         'T20 WCs': 't20wcs.csv',
         'WPL': 'WPL.csv',
         'CPL': 'CPL.csv',
@@ -356,6 +356,12 @@ def main():
     start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=ball, value=(1, ball))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
+    batting = st.multiselect("Select Batting Team:", filtered_data2['batting_team'].unique())
+    bowling = st.multiselect("Select Bowling Team:", filtered_data2['bowling_team'].unique())
+    if batting:
+        filtered_data2 = filtered_data2[filtered_data2['batting_team'].isin(batting)].copy()
+    if bowling:
+        filtered_data2 = filtered_data2[filtered_data2['bowling_team'].isin(batting)].copy()
     if choice2 == 'Individual':
         players = data['striker'].unique()
         player = st.multiselect("Select Players:", players)
