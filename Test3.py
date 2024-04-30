@@ -357,11 +357,9 @@ def main():
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     if selected_leagues == 'T20I':
-        batting = st.multiselect("Select Batting Team:", filtered_data2['batting_team'].unique())
-        bowling = st.multiselect("Select Bowling Team:", filtered_data2['bowling_team'].unique())
+        batting = st.multiselect("Select Teams:", filtered_data2['batting_team'].unique())
         if batting:
             filtered_data2 = filtered_data2[filtered_data2['batting_team'].isin(batting)].copy()
-        if bowling:
             filtered_data2 = filtered_data2[filtered_data2['bowling_team'].isin(batting)].copy()
     if choice2 == 'Individual':
         players = data['striker'].unique()
