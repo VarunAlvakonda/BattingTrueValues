@@ -245,10 +245,13 @@ def main():
 
     inns = [1, 2]
     if selected_leagues == 'T20I':
-        batting = st.multiselect("Select Teams:", filtered_data2['batting_team'].unique())
+        batting = st.multiselect("Select Batting Teams:", filtered_data2['batting_team'].unique())
+        bowling = st.multiselect("Select Bowling Teams:", filtered_data2['batting_team'].unique())
         if batting:
             filtered_data2 = filtered_data2[filtered_data2['batting_team'].isin(batting)].copy()
+        elif bowling:
             filtered_data2 = filtered_data2[filtered_data2['bowling_team'].isin(batting)].copy()
+
     if choice2 == 'Individual':
         players = data['bowler'].unique()
         player = st.multiselect("Select Players:", players)
