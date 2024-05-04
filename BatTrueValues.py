@@ -379,7 +379,7 @@ def main():
         if batting:
             filtered_data2 = filtered_data2[filtered_data2['batting_team'].isin(batting)].copy()
         elif bowling:
-            filtered_data2 = filtered_data2[filtered_data2['bowling_team'].isin(batting)].copy()
+            filtered_data2 = filtered_data2[filtered_data2['bowling_team'].isin(bowling)].copy()
     if choice2 == 'Individual':
         players = data['striker'].unique()
         player = st.multiselect("Select Players:", players)
