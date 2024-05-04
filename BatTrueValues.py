@@ -371,7 +371,7 @@ def main():
     start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=ball, value=(1, ball))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     # filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
-    filtered_data2 = filtered_data[(filtered_data['date'] >= pd.to_datetime(start_date)) & (filtered_data['date'] <= pd.to_datetime(end_date))]
+    filtered_data2 = filtered_data[(filtered_data['Date'] >= pd.to_datetime(start_date)) & (filtered_data['Date'] <= pd.to_datetime(end_date))]
 
     if selected_leagues == 'T20I':
         batting = st.multiselect("Select Teams:", filtered_data2['batting_team'].unique())
