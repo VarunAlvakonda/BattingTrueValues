@@ -313,6 +313,9 @@ def load_data(filename):
     data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
 
+
+    data['Date'] = pd.to_datetime(data['start_date'], format='%Y-%m-%d')
+
     return data
 
 
@@ -340,22 +343,37 @@ def main():
 
     data = load_data(league_files[selected_leagues])
     years = data['year'].unique()
+    dates = data['Date'].unique()
     data2 = data.groupby('striker')[['runs_off_bat', 'B']].sum().reset_index()
     run = max((data2['runs_off_bat']).astype(int))
     ball = max((data2['B']).astype(int))
+
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
+
     # Create a select box
     choice = st.selectbox('Select your option:', options)
     choice2 = st.selectbox('Individual Player or Everyone:', ['Individual','Everyone'])
-    pos = list(range(1, 12))
+
     # selected_options = st.multiselect('Choose options:', pos)
-    start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
+    # start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
+
+    # User inputs for date range
+    start_date = st.sidebar.date_input('Start date', data['Date'].min())
+    end_date = st.sidebar.date_input('End date', data['Date'].max())
+
+    # Filtering data based on the user's date selection
+    if start_date > end_date:
+        st.error('Error: End date must be greater than start date.')
+
+
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=run, value=(1, run))
     start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=ball, value=(1, ball))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
-    filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
+    # filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
+    filtered_data2 = filtered_data[(filtered_data['date'] >= pd.to_datetime(start_date)) & (filtered_data['date'] <= pd.to_datetime(end_date))]
+
     if selected_leagues == 'T20I':
         batting = st.multiselect("Select Teams:", filtered_data2['batting_team'].unique())
         if batting:
