@@ -167,6 +167,7 @@ def analyze_data_for_year(year, data):
 @st.cache_data
 def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
+
     data['B'] = 1
 
     # Set 'B' to 0 for deliveries that are wides
@@ -188,6 +189,9 @@ def load_data(filename):
 
     data['ball2'] = pd.to_numeric(data['ball'], errors='coerce')
     data['over'] = data['ball2'] // 1 + 1
+
+
+    data['Date'] = pd.to_datetime(data['start_date'], format='%Y-%m-%d')
 
     return data
 
