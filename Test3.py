@@ -359,8 +359,8 @@ def main():
     # start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years), value=(min(years), max(years)))
 
     # User inputs for date range
-    start_date = st.sidebar.date_input('Start date', data['Date'].min())
-    end_date = st.sidebar.date_input('End date', data['Date'].max())
+    start_date = st.date_input('Start date', data['Date'].min())
+    end_date = st.date_input('End date', data['Date'].max())
 
     # Filtering data based on the user's date selection
     if start_date > end_date:
