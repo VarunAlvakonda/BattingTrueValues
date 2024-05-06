@@ -314,7 +314,7 @@ def load_data(filename):
     data['over'] = data['ball2'] // 1 + 1
 
 
-    data['Date'] = pd.to_datetime(data['start_date'], format='%Y-%m-%d')
+    data['Date'] = pd.to_datetime(data['start_date'], format='mixed')
 
     return data
 
