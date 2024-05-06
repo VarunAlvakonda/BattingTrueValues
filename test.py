@@ -299,13 +299,14 @@ def main():
             st.dataframe(final_results4.round(2))
 
         elif choice == 'Season By Season':
-            temp = []
-            for i in player:
-                if i in combined_data['Player'].unique():
-                    temp.append(i)
-                else:
-                    st.subheader(f'{i} not in this list')
-            combined_data = combined_data[combined_data['Player'].isin(temp)]
+            if choice2 == 'Individual':
+                temp = []
+                for i in player:
+                    if i in combined_data['Player'].unique():
+                        temp.append(i)
+                    else:
+                        st.subheader(f'{i} not in this list')
+                combined_data = combined_data[combined_data['Player'].isin(temp)]
             combined_data = combined_data.sort_values(by=['Wicket'], ascending=False)
             combined_data = combined_data[
                 (combined_data['Wicket'] >= start_runs) & (combined_data['Wicket'] <= end_runs)]
