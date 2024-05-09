@@ -178,7 +178,7 @@ def analyze_data_for_year3(year2, data2):
     combined_df3['Over_Runs'] =combined_df3['Runs'] - combined_df3['Runs Scored']
     combined_df3['Over_B'] =combined_df3['B'] - combined_df3['BF']
     combined_df3['Over_Outs'] =combined_df3['Outs'] - combined_df3['Out']
-
+    combined_df3['Over_B'] = combined_df3['Over_B'].replace(0, 1)
     combined_df3['BSR'] = combined_df3['Over_Runs'] / combined_df3['Over_B']
     combined_df3['OPB'] = combined_df3['Over_Outs'] / combined_df3['Over_B']
 
