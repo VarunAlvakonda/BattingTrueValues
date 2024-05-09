@@ -316,6 +316,36 @@ def load_data(filename):
 
     data['Date'] = pd.to_datetime(data['start_date'], format='mixed')
 
+    def battingpositions(combineddata):
+        # Initialize a column for the batting position in the original DataFrame
+        grouped_data = combineddata.groupby(['match_id', 'batting_team'])
+        combineddata['batting_position'] = 0
+
+        # Iterate over each group (unique match_id and batting_team)
+        for (match_id, team), group in grouped_data:
+            # Initialize a dictionary to track positions
+            position_counter = {}
+            # Get the first row of the group to identify initial striker and non-striker
+            first_row = group.iloc[0]
+            initial_striker = first_row['striker']
+            initial_non_striker = first_row['non_striker']
+
+            # Assign position 1 to the initial striker and 2 to the initial non-striker
+            position_counter[initial_striker] = 1
+            position_counter[initial_non_striker] = 2
+
+            # Iterate through each row of the group to assign positions
+            for index, row in group.iterrows():
+                striker = row['striker']
+                if striker not in position_counter:
+                    # Assign the next position number to new strikers
+                    position_counter[striker] = len(position_counter) + 1
+                # Update the DataFrame with the batting position
+                combineddata.at[index, 'batting_position'] = position_counter[striker]
+        return combineddata
+
+    combined_data2 = battingpositions(data)
+    data = combined_data2.copy()
     return data
 
 
@@ -366,13 +396,14 @@ def main():
     if start_date > end_date:
         st.error('Error: End date must be greater than start date.')
 
+    start_pos, end_pos = st.slider('Select Batting Positions Range:', min_value=1, max_value=11, value=(1, 11))
     start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
     start_runs,end_runs = st.slider('Select Minimum Runs:', min_value=1, max_value=run, value=(1, run))
     start_runs1,end_runs1 = st.slider('Select Minimum BF:', min_value=1, max_value=ball, value=(1, ball))
     filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
     # filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
     filtered_data2 = filtered_data[(filtered_data['Date'] >= pd.to_datetime(start_date)) & (filtered_data['Date'] <= pd.to_datetime(end_date))]
-
+    filtered_data2 = filtered_data2[(filtered_data2['batting_position'] >= start_pos) & (filtered_data2['batting_position'] <= end_pos)]
     if selected_leagues == 'T20I':
         batting = st.multiselect("Select Batting Teams:", filtered_data2['batting_team'].unique())
         bowling = st.multiselect("Select Bowling Teams:", filtered_data2['batting_team'].unique())
