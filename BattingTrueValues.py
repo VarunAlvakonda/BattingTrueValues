@@ -222,6 +222,7 @@ def main():
 
     data = load_data(league_files[selected_leagues])
 
+
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
     # Create a select box
