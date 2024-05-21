@@ -157,7 +157,6 @@ def analyze_data_for_year3(year2, data2, cat):
     final_results2 = pd.merge(inns2, final_results, on=['Player', cat], how='left')
     final_results3 = pd.merge(players_years, final_results2, on=['Player', cat], how='left')
     final_results4 = pd.merge(final_results3, analysis_results, on=['Player', cat], how='left')
-    truevalues = truemetrics2(combined_df3)
     return final_results4.round(2)
 
 
@@ -165,23 +164,6 @@ def analyze_data_for_year3(year2, data2, cat):
 @st.cache_data
 def load_data(filename):
     data = pd.read_csv(filename, low_memory=False)
-    return data
-
-
-# The main app function
-
-def main():
-    st.title('Batting True Values by Bowling Type')
-
-    league_files = {
-        'IPL': 'IPLData5.csv',
-        'T20I': 'T20Data.csv',
-    }
-
-    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
-
-    data = load_data(league_files[selected_leagues])
-
     # Set 'B' to 0 for deliveries that are wides
     data['B'] = 1
 
@@ -196,7 +178,7 @@ def main():
     data['year'] = pd.to_datetime(data['StartDate'], format='mixed').dt.year
     data['Date'] = pd.to_datetime(data['StartDate'], format='mixed')
 
-# Remove any potential duplicate rows
+    # Remove any potential duplicate rows
     combined_data = data.drop_duplicates()
 
     years = data['year'].unique()
@@ -223,8 +205,23 @@ def main():
     data.loc[data['BowlType'].isin(lleg), 'Types'] = 'Left Arm Wrist Spin'
     data['BowlCat'] = data['BowlCat'].replace({'F': 'Pace', 'S': 'Spin'})
 
-    types = ['Right Arm Pace', 'Left Arm Pace', 'Right Arm Finger Spin', 'Left Arm Finger Spin', 'Right Arm Wrist Spin',
-             'Left Arm Wrist Spin', ]
+    return data
+
+
+# The main app function
+
+def main():
+    st.title('Batting True Values by Bowling Type')
+
+    league_files = {
+        'IPL': 'IPLData5.csv',
+        'T20I': 'T20Data.csv',
+    }
+
+    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
+
+    data = load_data(league_files[selected_leagues])
+
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
     # Create a select box
