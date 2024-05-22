@@ -178,9 +178,6 @@ def load_data(filename):
     data['year'] = pd.to_datetime(data['StartDate'], format='mixed').dt.year
     data['Date'] = pd.to_datetime(data['StartDate'], format='mixed')
 
-    # Remove any potential duplicate rows
-    combined_data = data.drop_duplicates()
-
     years = data['year'].unique()
 
     # Remove any potential duplicate rows
@@ -219,9 +216,7 @@ def main():
     }
 
     selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
-
     data = load_data(league_files[selected_leagues])
-
 
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
