@@ -215,9 +215,9 @@ def main():
         'T20I': 'T20Data.csv',
     }
 
-    selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
-    data = load_data(league_files[selected_leagues])
-
+    data = load_data('T20Leagues.csv')
+    selected_leagues = st.multiselect('Choose leagues:', data['CompName'].unique())
+    data = data[data['CompName'].isin(selected_leagues)]
 
     # Selectors for user input
     options = ['Overall Stats', 'Season By Season']
