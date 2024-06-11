@@ -218,9 +218,9 @@ def main():
     leagues = load_data('T20Leagues.csv')
     allt20s = pd.concat([t20is,leagues], ignore_index=True)
 
-    selected_leagues = st.multiselect('Choose leagues:', allt20s['CompGrp'].unique())
+    selected_leagues = st.multiselect('Choose leagues:', allt20s['CompName'].unique())
 
-    data = allt20s[allt20s['CompGrp'].isin(selected_leagues)]
+    data = allt20s[allt20s['CompName'].isin(selected_leagues)]
     # selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
     # data = load_data(league_files[selected_leagues])
 
