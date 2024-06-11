@@ -220,83 +220,84 @@ def main():
 
     selected_leagues = st.multiselect('Choose leagues:', allt20s['CompName'].unique())
 
-    data = allt20s[allt20s['CompName'].isin(selected_leagues)]
-    # selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
-    # data = load_data(league_files[selected_leagues])
+    if selected_leagues:
+        data = allt20s[allt20s['CompName'].isin(selected_leagues)]
+        # selected_leagues = st.selectbox('Choose leagues:', list(league_files.keys()))
+        # data = load_data(league_files[selected_leagues])
 
 
-    # Selectors for user input
-    options = ['Overall Stats', 'Season By Season']
-    # Create a select box
-    choice = st.selectbox('Select your option:', options)
-    choice2 = st.selectbox('Individual Player or Everyone:', ['Individual', 'Everyone'])
-    choice3 = st.selectbox('Each bowling type or Pace vs Spin:', ['Each bowling type', 'Pace vs Spin'])
-    dic = {'Pace vs Spin': 'BowlCat', 'Each bowling type': 'Types'}
-    cat = dic[choice3]
-    # User inputs for date range
-    start_date = st.date_input('Start date', data['Date'].min())
-    end_date = st.date_input('End date', data['Date'].max())
+        # Selectors for user input
+        options = ['Overall Stats', 'Season By Season']
+        # Create a select box
+        choice = st.selectbox('Select your option:', options)
+        choice2 = st.selectbox('Individual Player or Everyone:', ['Individual', 'Everyone'])
+        choice3 = st.selectbox('Each bowling type or Pace vs Spin:', ['Each bowling type', 'Pace vs Spin'])
+        dic = {'Pace vs Spin': 'BowlCat', 'Each bowling type': 'Types'}
+        cat = dic[choice3]
+        # User inputs for date range
+        start_date = st.date_input('Start date', data['Date'].min())
+        end_date = st.date_input('End date', data['Date'].max())
 
-    # Filtering data based on the user's date selection
-    if start_date > end_date:
-        st.error('Error: End date must be greater than start date.')
+        # Filtering data based on the user's date selection
+        if start_date > end_date:
+            st.error('Error: End date must be greater than start date.')
 
-    # start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years),
-    #                                  value=(min(years), max(years)))
-    start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
-    filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
-    filtered_data2 = filtered_data[(filtered_data['Date'] >= pd.to_datetime(start_date)) & (filtered_data['Date'] <= pd.to_datetime(end_date))]
-    # filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
-    if choice2 == 'Individual':
-        players = data['Batter'].unique()
-        player = st.multiselect("Select Players:", players)
-        # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
-    cats = st.multiselect('Choose Specifics: ', filtered_data2[cat].unique())
-    if cats:
-        filtered_data2 = filtered_data2[filtered_data2[cat].isin(cats)]
-    x = filtered_data2
-    # A button to trigger the analysis
-    if st.button('Analyse'):
-        # Call a hypothetical function to analyze data
-        all_data = []
+        # start_year, end_year = st.slider('Select Years Range:', min_value=min(years), max_value=max(years),
+        #                                  value=(min(years), max(years)))
+        start_over, end_over = st.slider('Select Overs Range:', min_value=1, max_value=20, value=(1, 20))
+        filtered_data = data[(data['over'] >= start_over) & (data['over'] <= end_over)]
+        filtered_data2 = filtered_data[(filtered_data['Date'] >= pd.to_datetime(start_date)) & (filtered_data['Date'] <= pd.to_datetime(end_date))]
+        # filtered_data2 = filtered_data[(filtered_data['year'] >= start_year) & (filtered_data['year'] <= end_year)]
+        if choice2 == 'Individual':
+            players = data['Batter'].unique()
+            player = st.multiselect("Select Players:", players)
+            # name = st.selectbox('Choose the Player From the list', data['striker'].unique())
+        cats = st.multiselect('Choose Specifics: ', filtered_data2[cat].unique())
+        if cats:
+            filtered_data2 = filtered_data2[filtered_data2[cat].isin(cats)]
+        x = filtered_data2
+        # A button to trigger the analysis
+        if st.button('Analyse'):
+            # Call a hypothetical function to analyze data
+            all_data = []
 
-        # Analyze data and save results for each year
-        for year in filtered_data2['year'].unique():
-            results = analyze_data_for_year3(year, filtered_data2, cat)
-            all_data.append(results)
+            # Analyze data and save results for each year
+            for year in filtered_data2['year'].unique():
+                results = analyze_data_for_year3(year, filtered_data2, cat)
+                all_data.append(results)
 
-        combined_data = pd.concat(all_data, ignore_index=True)
+            combined_data = pd.concat(all_data, ignore_index=True)
 
-        truevalues = combined_data.groupby(['Player', cat])[
-            ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum().reset_index()
-        final_results = truemetrics(truevalues)
-
-        final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
-        if choice == 'Overall Stats':
-            if choice2 == 'Individual':
-                temp = []
-                for i in player:
-                    if i in final_results['Player'].unique():
-                        temp.append(i)
-                    else:
-                        st.subheader(f'{i} not in this list')
-                final_results = final_results[final_results['Player'].isin(temp)]
-
+            truevalues = combined_data.groupby(['Player', cat])[
+                ['I', 'Runs Scored', 'BF', 'Out', 'Expected Runs', 'Expected Outs']].sum().reset_index()
+            final_results = truemetrics(truevalues)
 
             final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
-            st.dataframe(final_results.round(2))
-        elif choice == 'Season By Season':
-            if choice2 == 'Individual':
-                temp = []
+            if choice == 'Overall Stats':
+                if choice2 == 'Individual':
+                    temp = []
+                    for i in player:
+                        if i in final_results['Player'].unique():
+                            temp.append(i)
+                        else:
+                            st.subheader(f'{i} not in this list')
+                    final_results = final_results[final_results['Player'].isin(temp)]
 
-                for i in player:
-                    if i in combined_data['Player'].unique():
-                        temp.append(i)
-                    else:
-                        st.subheader(f'{i} not in this list')
-                combined_data = combined_data[combined_data['Player'].isin(temp)]
-            combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
-            st.dataframe(combined_data)
+
+                final_results = final_results.sort_values(by=['Runs Scored'], ascending=False)
+                st.dataframe(final_results.round(2))
+            elif choice == 'Season By Season':
+                if choice2 == 'Individual':
+                    temp = []
+
+                    for i in player:
+                        if i in combined_data['Player'].unique():
+                            temp.append(i)
+                        else:
+                            st.subheader(f'{i} not in this list')
+                    combined_data = combined_data[combined_data['Player'].isin(temp)]
+                combined_data = combined_data.sort_values(by=['Runs Scored'], ascending=False)
+                st.dataframe(combined_data)
 
 
 
